@@ -9,20 +9,22 @@ clear;
 %%% "model_p4_2"
 
 % Define true system
-A = [];               
-B = [];
+A = [-0.25, 3;
+     -5,    0];
+B = [1; 2];
 
 % Inital conditions
-x0 = [];
+x0 = [1; 1];
 
 % Update law gains
 gamma_1 = [];
 gamma_2 = [];
 
 % Initial estimates
-x_hat_0 = [];
-A_hat_0 = [];
-B_hat_0 = [];
+x_hat_0 = [0; 0];
+A_hat_0 = [1, 0;
+           0, 1];
+B_hat_0 = [1; 1];
 
 % Experiment with initial values and gains! Hint: Avoid too high gains..
 
@@ -50,22 +52,22 @@ grid
 figure(2)
 subplot(2,2,1)
 plot(t,y(:,5)); hold on
-plot(t,a11*ones(length(t),1)); hold off
+plot(t,A(1,1)*ones(length(t),1)); hold off
 ylabel('A_{11}')
 grid
 subplot(2,2,2)
 plot(t,y(:,7)); hold on
-plot(t,a12*ones(length(t),1)); hold off
+plot(t,A(1,2)*ones(length(t),1)); hold off
 ylabel('A_{12}')
 grid
 subplot(2,2,3)
 plot(t,y(:,6)); hold on
-plot(t,a21*ones(length(t),1)); hold off
+plot(t,A(2,1)*ones(length(t),1)); hold off
 ylabel('A_{21}')
 grid
 subplot(2,2,4)
 plot(t,y(:,8)); hold on
-plot(t,zeros(length(t),1)); hold off
+plot(t,A(2,2)*ones(length(t),1)); hold off
 ylabel('A_{22}')
 grid
 
@@ -73,12 +75,12 @@ grid
 figure(3)
 subplot(2,1,1)
 plot(t,y(:,9)); hold on
-plot(t,1*ones(length(t),1)); hold off
+plot(t,B(1)*ones(length(t),1)); hold off
 ylabel('B_1')
 grid
 subplot(2,1,2)
 plot(t,y(:,10)); hold on
-plot(t,b2*ones(length(t),1)); hold off
+plot(t,B(2)*ones(length(t),1)); hold off
 ylabel('B_2')
 grid
 xlabel('t [s]')
