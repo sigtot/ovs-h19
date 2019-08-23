@@ -18,7 +18,7 @@ A_hat = reshape(x(5:8,1),[2 2]);
 dxdt(3:4,1) = 0;                      %%% Insert update law for x_hat
 
 % Update law for estimates of A and B
-dA_hat = 0;                           %%% Insert update law for A_hat
+dA_hat = 0; %%% Fix this update law
 dxdt(5:8,1) = dA_hat(:);
 
 dxdt(9:10,1) = 0;                     %%% Insert update law for B_hat
