@@ -57,6 +57,7 @@
 % Oppgavenummerering %
 \renewcommand\thesection{Task \arabic{section}}
 \renewcommand\thesubsection{\alph{subsection})}
+\renewcommand\thesubsubsection{\roman{subsubsection})}
 
 % Bevis
 \newcommand\TombStone{\rule{.5em}{.5em}}
@@ -90,9 +91,47 @@ We turn on alpha blending and create three transparent, overlapping triangles ov
 \caption{Overlapping triangles.}
 \label{fig:overlap}
 \end{figure}
+\subsection{}
+\subsubsection{}
+Changing the front triangle to green, shown in figure \ref{fig:overlap2} makes the blended colors different.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\columnwidth]{overlap2.png}
+\caption{Overlapping triangles, green in front.}
+\label{fig:overlap2}
+\end{figure}
+This becomes especially clear if we look at the center triangles separately. These are shown in figure \ref{fig:tris_centers}.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\columnwidth]{tris_centers.png}
+\caption{Overlapping triangle centers.}
+\label{fig:tris_centers}
+\end{figure}
+Clearly, the one with the green triangle in front (left triangle) is much more green than the other. We can analyze the resulting colors. As can be seen in figure \ref{fig:colors}, the triangles contain equal amounts of red, but the green and blue colors switch place, exactly as expected.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\columnwidth]{colors.png}
+\caption{Color intensities. Top: green tri in front. Bottom: blue tri in front.}
+\label{fig:colors}
+\end{figure}
+
+\subsubsection{}
+We now try to exchange the order triangle order through the z-coordinate. Placing the front triangle (the blue triangle, which we recall is \textit{drawn last} of the three) inbetween the red and the green, we obtain the (perhaps unexpected) result in figure \ref{fig:overlap3}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\columnwidth]{overlap3.png}
+\caption{Depth and draw order mismatched.}
+\label{fig:overlap3}
+\end{figure}
+This result can be understood by understanding how we emulate transparency in OpenGL and how it relates to the z-buffer. Before painting the fragments of any triangle, transparent or not, we look at at the index buffer for the current fragment. When using \texttt{GL\_LESS}, if the buffer contains a smaller value than the z-coordinate of the current fragment, it means that some other shape has already been drawn in front and the fragment is hence not painted. In our case, the green triangle is in front of the blue, so upon drawing the blue (which happens after the green) OpenGL does not paint any of the fragments that overlap with the green. For an example of the intended behaviour, we can look at the red and green triangles. The red is really behind the green, but it gets drawn first. So when painting it, every fragment passes the depth test, and are subsequently painted. Afterwards, when the green triangle gets drawn, it (also passing the depth test entirely) gets drawn fully, but because we have enabled alpha blending, the colors drawn get calculated from the blending function. To summarize, the three triangle draws that OpenGL does is shown (from left to right) in figure \ref{fig:steps}.
+\begin{figure}[H]
+\centering
+\includegraphics[width=\columnwidth]{steps.png}
+\caption{Draw steps.}
+\label{fig:steps}
+\end{figure}
 
 \end{multicols}
-
 \appendix
 \section{C++ snippets}
 \begin{lstlisting}[language={C++}, caption={Vertices for 6 triangles}, label={lst:6_tris_1}]
