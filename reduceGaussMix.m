@@ -31,7 +31,8 @@ function [xmix, Pmix] = reduceGaussMix(w, x, P)
     P_squiggle = P_squiggle - xmix * xmix';
     
     for i = 1:M
-        Pmix = Pmix + w(i) * P(1 + (n*(i-1)):n*i, :);
+        %Pmix = Pmix + w(i) * P(1 + (n*(i-1)):n*i, :);
+        Pmix = Pmix + w(i) * P(:, :, i);
     end
     Pmix = Pmix + P_squiggle;
 end
