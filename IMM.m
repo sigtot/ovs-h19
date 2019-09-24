@@ -53,7 +53,10 @@ classdef IMM
            xmix = zeros(size(x));
            Pmix = zeros(size(P));
            
-           [xmix, Pmix] = reduceGaussMix(smixprobs, x, P); % smixprobs = Weights?
+           % one gaussian for each row
+           for i = 1:obj.M
+               xmix(i) = reduceGaussMix(smixprobs(i), x(i), P(i));
+           end
        end
        
        function [xpred, Ppred] = modeMatchedPrediction(obj, x, P, Ts)
