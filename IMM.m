@@ -25,19 +25,19 @@ classdef IMM
        function [spredprobs, smixprobs] = mixProbabilities(obj, sprobs)
            % IMM: step 1
            %
-           % probs (M x 1): mode probabilities
+           % sprobs (M x 1): probabilities that we are in each mode
            %
            % spredprobs (M x 1): predicted mode probabilities
            % smixprobs (M x M): mixing probabilities
            
            % Joint probability for this model and next
-           spsjointprobs = sprobs;% ... (6.12)?
+           spsjointprobs = obj.PI .* (ones(obj.M,1) *sprobs');% 
            
-           % marginal probability for next model
-           spredprobs = spsjointprobs;% ... (6.32)?
+           % marginal probability for next model (sum over all modes)
+           spredprobs = spsjointprobs * ones(obj.M,1);% ... (6.32)?
            
            % conditionional probability for model at this time step on the next.
-           smixprobs = obj.PI * spredprobs; % ... (6.26)?
+           smixprobs =spsjointprobs ./ (spredprobs * ones(1, obj.M)); % ... (6.26)?
        end
        
        function [xmix, Pmix] = mixStates(obj, smixprobs, x, P)
@@ -53,8 +53,7 @@ classdef IMM
            xmix = zeros(size(x));
            Pmix = zeros(size(P));
            
-           % mix for each mode, 
-           ...
+           [xmix, Pmix] = reduceGaussMix(smixprobs, x, P); % smixprobs = Weights?
        end
        
        function [xpred, Ppred] = modeMatchedPrediction(obj, x, P, Ts)
