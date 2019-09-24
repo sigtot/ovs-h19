@@ -31,13 +31,13 @@ classdef IMM
            % smixprobs (M x M): mixing probabilities
            
            % Joint probability for this model and next
-           spsjointprobs = % ...
+           spsjointprobs = sprobs;% ... (6.12)?
            
            % marginal probability for next model
-           spredprobs = % ...
+           spredprobs = spsjointprobs;% ... (6.32)?
            
            % conditionional probability for model at this time step on the next.
-           smixprobs = % ...
+           smixprobs = obj.PI * spredprobs; % ... (6.26)?
        end
        
        function [xmix, Pmix] = mixStates(obj, smixprobs, x, P)
