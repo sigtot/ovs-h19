@@ -34,7 +34,7 @@
 
 
 % Oppgavenummerering %
-\renewcommand\thesection{Oppgave \arabic{section}}
+\renewcommand\thesection{Task \arabic{section}}
 \renewcommand\thesubsection{\alph{subsection})}
 
 % Bevis
@@ -110,8 +110,85 @@ p(z_k | z_{1:k-1}) = \sum_{s_k}\Lambda_k^{(s_k)}p_k^{(s_k)}.
 \end{aligned}\end{equation}
 
 \subsection{}
+Using the total probability theorem we get
+\begin{equation}\begin{aligned}
+p(z_k | z_{1:k-1})
+&= \int p(z_k | x_k, z_{1:k-1}) p(x_k | z_{1:k-1})dx_k \\
+&= \int p(z_k | x_k) p(x_k | z_{1:k-1})dx_k
+\end{aligned}\end{equation}
+where we have used the markov assumption to obtain the second line. If we then insert the given distribution $p(x_k | z_{1:k-1}) \approx \sum_{i=1}^{N}w^i_k \delta(x_k - x_k^i)$, we get
+\begin{equation}\begin{aligned}
+p(z_k | z_{1:k-1})
+&= \int p(z_k|x_k)  \sum_{i=1}^{N}w^i_k \delta(x_k - x_k^i) dx_k \\
+&= \sum_{i=1}^{N}w^i_k p(z_k | x_k^i)
+\end{aligned}\end{equation}
+because of the fundamental property of the dirac delta function.
 
+\section{}
+\subsection{}
+\begin{lstlisting}[caption={IMM Step 1}]
+function [spredprobs, smixprobs] = mixProbabilities(obj, sprobs)
+   % IMM: step 1
+   %
+   % sprobs (M x 1): probabilities that we are in each mode
+   %
+   % spredprobs (M x 1): predicted mode probabilities
+   % smixprobs (M x M): mixing probabilities
 
+   % Joint probability for this model and next
+   spsjointprobs = obj.PI .* (ones(obj.M,1) *sprobs');%
+
+   % marginal probability for next model (sum over all modes)
+   spredprobs = spsjointprobs * ones(obj.M,1);% ... (6.32)?
+
+   % conditionional probability for model at this time step on the next.
+   smixprobs =spsjointprobs ./ (spredprobs * ones(1, obj.M)); % ... (6.26)?
+end
+\end{lstlisting}
+
+\subsection{}
+\begin{lstlisting}[caption={IMM Step 2}]
+function [xmix, Pmix] = mixStates(obj, smixprobs, x, P)
+   % IMM: step 2
+   % smixprob (M x M): mixing probabilities
+   % x (dim(state) x M): means to mix
+   % P (dim(state) x dim(state) x M): covariances to mix
+   %
+   % xmix (dim(state) x M): mixed means
+   % Pmix (dim(state) x dim(state) x M): mixed covariances
+
+   % allocate
+   xmix = zeros(size(x));
+   Pmix = zeros(size(P));
+
+   % one gaussian for each row
+   for i = 1:obj.M
+       xmix(i) = reduceGaussMix(smixprobs(i), x(i), P(i));
+   end
+end
+\end{lstlisting}
+
+\subsection{}
+\begin{lstlisting}[caption={IMM Step 3}]
+function [xpred, Ppred] = modeMatchedPrediction(obj, x, P, Ts)
+   % IMM: prediction part of step 3
+   % x (dim(state) x M matrix): mean to predict
+   % P (dim(state) x dim(state) x M): covariance to predict
+   % Ts: sampling time for prediction.
+   %
+   % xpred (dim(state) x M): predicted means
+   % Ppred (dim(state) x dim(state) x M): predicted covariances
+
+   % allocate
+   xpred = zeros(size(x));
+   Ppred = zeros(size(P));
+
+   % mode matched prediction
+   for i = 1:obj.M
+       [xpred(i), Ppred(i)] = predict(obj.modelFilters(i), x(i), P(i), Ts);
+   end
+end
+\end{lstlisting}
 
 \end{document}
 
