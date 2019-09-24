@@ -73,7 +73,9 @@ classdef IMM
            Ppred = zeros(size(P));
            
            % mode matched prediction
-           ...
+           for i = 1:obj.M
+               [xpred(i), Ppred(i)] = predict(obj.modelFilters(i), x(i), P(i), Ts);
+           end
        end
        
        function [sprobspred, xpred, Ppred] = predict(obj, sprobs, x, P, Ts)
