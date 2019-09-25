@@ -1,14 +1,19 @@
 close all;
 clear;
 
+%% Create time
+h       = 0.01;  % sample time (s)
+N       = 50000; % number of samples
+t       = 0:h:h*(N-1);
+
 %% Insert true system
-m = 20;
+m = @(n) 20*(2-exp(-0.01*(t(n)-20)));
 beta = 0.1;
 k = 5;
-A = [0       1
-     -k/m -beta/m]; % <-- Fill in blanks
-B = [0
-     1/m];               % <-- Fill in blanks
+A = @(n) [0       1
+          -k/m(n) -beta/m(n)]; % <-- Fill in blanks
+B = @(n) [0
+          1/m(n)];               % <-- Fill in blanks
 
  lambda_1 = 1;
  lambda_0 = 1;
@@ -24,11 +29,6 @@ B = [0
 gamma   = diag([500, 100, 100]);                               % <-- Fill in blanks
 
 %% Simulation MATLAB
-h       = 0.01;  % sample time (s)
-N       = 8000; % number of samples
-
-t       = 0:h:h*(N-1);
-
 % Define input as a function of t
 u       = @(n) sin(t(n));                               % <-- Fill in blanks
 
@@ -39,15 +39,17 @@ x_z     = zeros(2, 1);
 x_phi   = zeros(2, 1);
 theta   = zeros(3, N);
 U       = zeros(N-1,1);
+masses  = zeros(1, N);
 
 % Initial estimates
 theta(:,1) = [0; 0; 0];                            % <-- Fill in blanks
+masses(:,1) = m(1);
 
 % Main loop. Simulate using forward Euler (x[k+1] = x[k] + h*x_dot)
 for n = 1:N-1
 
     % Simulate true system
-    x_dot           = A*x(:, n) + B*u(n);
+    x_dot           = A(n)*x(:, n) + B(n)*u(n);
     x(:, n+1)       = x(:, n) + h*x_dot;
     y               = x(1, n);
 
@@ -69,13 +71,14 @@ for n = 1:N-1
     % Set values for next iteration
     x_phi           = x_phi_n;
     x_z             = x_z_n;
+    masses(:, n+1) = m(n+1);
 end
 
 % Plots
 figure
 subplot(3,1,1)
 plot(t, theta(1,:)); hold on
-plot([t(1), t(end)],[m, m]); hold off
+plot(t, masses(1,:)); hold off
 ylabel('m')
 legend('estimate','true value')
 grid
