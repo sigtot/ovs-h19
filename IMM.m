@@ -6,22 +6,22 @@ classdef IMM
    end
    methods
        function obj = IMM(modelcellarr, PI)
-           % modelcell (M x 1 cell): cell array of EKFs 
+           % modelcell (M x 1 cell): cell array of EKFs
            % PI (M x M): Markov transition matrix
             obj = obj.setModel(modelcellarr, PI);
        end
-       
+
        function obj = setModel(obj, modelcellarr, PI)
                % sets the internal functions and paramters
                %
-               % modelcell (M x 1 cell): cell array of EKFs 
+               % modelcell (M x 1 cell): cell array of EKFs
                % PI (M x M): Markov transition matrix
                obj.modeFilters = modelcellarr;
                obj.PI = PI;
                obj.M = size(PI, 1);
        end
-       
-       
+
+
        function [spredprobs, smixprobs] = mixProbabilities(obj, sprobs)
            % IMM: step 1
            %
@@ -29,17 +29,17 @@ classdef IMM
            %
            % spredprobs (M x 1): predicted mode probabilities
            % smixprobs (M x M): mixing probabilities
-           
+
            % Joint probability for this model and next
-           spsjointprobs = obj.PI .* (ones(obj.M,1) *sprobs');% 
-           
+           spsjointprobs = obj.PI .* (ones(obj.M,1) *sprobs');%
+
            % marginal probability for next model (sum over all modes)
            spredprobs = spsjointprobs * ones(obj.M,1);% ... (6.32)?
-           
+
            % conditionional probability for model at this time step on the next.
            smixprobs =spsjointprobs ./ (spredprobs * ones(1, obj.M)); % ... (6.26)?
        end
-       
+
        function [xmix, Pmix] = mixStates(obj, smixprobs, x, P)
            % IMM: step 2
            % smixprob (M x M): mixing probabilities
@@ -48,57 +48,57 @@ classdef IMM
            %
            % xmix (dim(state) x M): mixed means
            % Pmix (dim(state) x dim(state) x M): mixed covariances
-           
+
            % allocate
            xmix = zeros(size(x));
            Pmix = zeros(size(P));
-           
+
            % one gaussian for each row
            for i = 1:obj.M
                xmix(i) = reduceGaussMix(smixprobs(i), x(i), P(i));
            end
        end
-       
+
        function [xpred, Ppred] = modeMatchedPrediction(obj, x, P, Ts)
-           % IMM: prediction part of step 3 
+           % IMM: prediction part of step 3
            % x (dim(state) x M matrix): mean to predict
            % P (dim(state) x dim(state) x M): covariance to predict
            % Ts: sampling time for prediction.
            %
            % xpred (dim(state) x M): predicted means
            % Ppred (dim(state) x dim(state) x M): predicted covariances
-           
+
            % allocate
            xpred = zeros(size(x));
            Ppred = zeros(size(P));
-           
+
            % mode matched prediction
            for i = 1:obj.M
-               [xpred(i), Ppred(i)] = predict(obj.modelFilters(i), x(i), P(i), Ts);
+               [xpred(:, i), Ppred(:, :, i)] = obj.modelFilters{i}.update(x(:, i), P(:, :, i), Ts);
            end
        end
-       
+
        function [sprobspred, xpred, Ppred] = predict(obj, sprobs, x, P, Ts)
            % IMM: step 1, 2 and prediction part of 3
            % sprobs (M x 1): mode probabilities
            % x (dim(state) x M): means to predict
            % P (dim(state) x dim(state) x M): covariances to predict
            % Ts: sampling time
-           % 
+           %
            % sprobspred (M x 1): predicted mode probabilities
            % xpred (dim(state) x M): predicted means
            % Ppred (dim(state) x dim(state) x M): predicted covariances
-           
+
            % step 1
-           [sprobspred, smixprobs] = % ...
-           
+           [sprobspred, smixprobs] = obj.mixProbabilities(sprobs);
+
            % step 2
-           [xmix, Pmix] = % ...
-           
+           [xmix, Pmix] = obj.mixStates(smixprobs, x, P);
+
            % prediction part of step 3
-           [xpred, Ppred] = % ...
+           [xpred, Ppred] = obj.modeMatchedPrediction(xmix, Pmix, Ts);
        end
-       
+
        function [xupd, Pupd, logLambdas] = modeMatchedUpdate(obj, z, x, P)
            % IMM: update part of step 3
            % z (dim(measurement) x 1): measurement
