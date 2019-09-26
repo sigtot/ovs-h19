@@ -73,6 +73,37 @@
 \begin{multicols}{2}
 \section{The Eagle has Landed}
 \subsection{}
+We begin by simply creating a \texttt{Mesh} object from \texttt{lunarsurface.obj} and sending the vertex, colour, and index vectors into the \texttt{createVAO} function. As expected, the lunar surface renders correctly, albeit without any colors at this time, so it is completely white as shown in figure \ref{fig:white-surface} below.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\columnwidth]{white-surface}
+\caption{Lunar surface without any coloring}
+\label{fig:white-surface}
+\end{figure}
+
+\setcounter{subsection}{2}
+\subsection{}
+In this task and the previous, we add a third VBO to hold the normals and pass these values through the vertex shader into the fragment shader. Setting the fragment color equal to the x, y, and z components of each normal vector yields a predominantly green surface as shown in figure \ref{fig:green-surface} below.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\columnwidth]{green-surface}
+\caption{Lunar surface colored by directly inserting the surface normal values}
+\label{fig:green-surface}
+\end{figure}
+We notice how green color corresponds to upward pointing normals, whereas red and blue are for more sideways surfaces.
+
+\subsection{}
+Inserting the Lambertian illumination model,
+\begin{equation}\begin{aligned}
+\text{color} * \max(0, \hat{\mathbf{n}} \cdot (- \hat{\mathbf{l}})),
+\end{aligned}\end{equation}
+where $\hat{\mathbf{n}}$ is the surface normal and $\hat{\mathbf{l}}$ is the normalized lighting direction the surface becomes a \textit{Lambertian surface}. Coloring the surface a pure white results in the following (quite convincing) scene, clearly showing that the surface is indeed lit. (Figure \ref{fig:lambert-surface}).
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\columnwidth]{lambert-surface}
+\caption{Lunar surface with Lambertian shading}
+\label{fig:lambert-surface}
+\end{figure}
 \end{multicols}
 \appendix
 \section{C++ snippets}
