@@ -129,11 +129,9 @@ classdef IMM
            %
            % supdprobs (M x 1): updated mode probabilities
            % loglikelihood: measurement log likelilhood (total, ie. p(z_k | z_(1:k-1)))
-
-           ... % you might want to do some precalculations here.
-
-           loglikelihood = % ... % you might want to use the logSumExp function at the bottom of this file
-           supdprobs = % ...
+       
+           loglikelihood = logSumExp(logLambdas + log(sprobs));
+           supdprobs = exp(logLambdas + log(sprobs) - loglikelihood);
        end
 
        function [supdprobs, xupd, Pupd, loglikelihood] = update(obj, z, sprobs, x, P)
@@ -150,10 +148,10 @@ classdef IMM
            % loglikelihood: measurement log likelilhood (total, ie. p(z_k | z_(1:k-1)))
 
            % update part of step 3
-           [xupd, Pupd, logLambdas] = % ...
+           [xupd, Pupd, logLambdas] = obj.modeMatchedUpdate(z, x, P);% ...
 
            % step 4
-           [supdprobs, loglikelihood] = % ...
+           [supdprobs, loglikelihood] = obj.updateProbabilities(logLambdas, sprobs);% ...
        end
 
        function [xest, Pest] = estimate(obj, sprobs, x, P)
