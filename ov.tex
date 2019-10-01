@@ -104,7 +104,27 @@ where $\hat{\mathbf{n}}$ is the surface normal and $\hat{\mathbf{l}}$ is the nor
 \caption{Lunar surface with Lambertian shading}
 \label{fig:lambert-surface}
 \end{figure}
+\section{}
+\setcounter{subsection}{2}
+\subsection{}
+We define the scene graph illustrated in figure \ref{fig:scene-graph}.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\columnwidth]{scenegraph}
+\caption{Scene graph}
+\label{fig:scene-graph}
+\end{figure}
+This graph, when drawn using a basic pre-order recursive draw method yields the physics defying helicopter shown in figure \ref{fig:chopper} below.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\columnwidth]{chopper}
+\caption{A helicopter on the moon}
+\label{fig:chopper}
+\end{figure}
 \end{multicols}
+
+
 \appendix
 \section{C++ snippets}
 \begin{lstlisting}[language={C++}, caption={Vertices for 6 triangles}, label={lst:6_tris_1}]
