@@ -14,7 +14,7 @@
 
 
 % Oppgavenummerering %
-\renewcommand\thesection{Oppgave \arabic{section}}
+\renewcommand\thesection{Task \arabic{section}}
 \renewcommand\thesubsection{\alph{subsection})}
 
 % Bevis
@@ -30,6 +30,63 @@
 
 \section{}
 \subsection{}
+Using bayes theorem for pdfs, total probability over $x$ and the fact that $\Pr(\delta | x) = p(\delta | x) = P_D(x)$, we get
+\begin{equation}\begin{aligned}
+\label{eq:badboi}
+p(x | \delta ) =  \frac{p(\delta | x) p(x)}{p(\delta)} = \frac{P_D(x)p(x)}{\int P_D(x) p(x) dx}.
+\end{aligned}\end{equation}
+From this, we observe that the denominator, being an integral over the entire state, is a constant in $x$, i.e. does not vary for different $x$. What we are then left with, is $p(\delta | x)$ equaling $p(x)$ scaled by $P_D(x)$ and a constant. Hence, if since $P_D(x)$ varies with $x$, $p(x | \delta) \neq p(x)$ in general. This is generally what we would expect, a radar for instance would have a larger probability of detecting objects closer to the radar, than those far away. If we however say that $P_D(x)$ is constant, we cannot know anything about the state given a detection, since the detection probability is independent from $x$. We see this from \eqref{eq:badboi} actually, as $P_D(x)$ being constant lets us take it out of the integral and get
+\begin{equation}\begin{aligned}
+p(x | \delta ) =  \frac{P_D(x)p(x)}{P_D(x) \int p(x) dx} = \frac{p(x)}{\int p(x) dx} = p(x)
+\end{aligned}\end{equation}
+since by definition $\int p(x) dx = 1$.
+
+\section{}
+\subsection{}
+Since each cell is a Bernoulli trial with probability $P_{FA}$ of success (the cells are assumed to be iid.), $M_k$ such trials is simply a Binomial distribution with $M_k$ trials and $P_{FA}$ probability.
+
+\subsection{}
+Inserting the pdf into theorem 7.3.1 we obtain for $a_k = 0$,
+\begin{equation}\begin{aligned}
+\Pr(a_k | Z_{1:k})
+&\propto (1 - P_D) m_k
+\frac{e^{-\lambda V_k}}{e^{-\lambda V_k}}
+\frac{(\lambda V_k)^{m_k}}{(\lambda V_k)^{m_k - 1}}
+\frac{(m_k - 1)!}{(m_k)!} \\
+&= (1 - P_D)m_k \lambda V_k \frac{1}{m_k} \\
+&= \lambda V_K (1 - P_D).
+\end{aligned}\end{equation}
+For $a_k > 0$ we obtain
+\begin{equation}\begin{aligned}
+\Pr(a_k | Z_{1:k})
+&\propto \frac{P_D}{c(z_k^{a_k})}l^{a_k}.
+\end{aligned}\end{equation}
+Inserting equation (7.14) as well as using $l^{a_k} = \mathcal{N}(z_k^{a_k} | \hat z_{k|k-1}, S_k)$, this becomes
+\begin{equation}\begin{aligned}
+\Pr(a_k | Z_{1:k})
+&\propto P_D V_K \mathcal{N}(z_k^{a_k} | \hat z_{k|k-1}, S_k).
+\end{aligned}\end{equation}
+Since both terms are scaled by $V_k$, they are proportional exactly as shown in Corollary 7.3.3.
+
+\subsection{}
+We have for $a_k = 0$,
+\begin{equation}\begin{aligned}
+\Pr(a_k | Z_{1:k})
+&\propto
+(1 - P_D) m_k \frac{{M_K \choose m_k} P_{FA}^{m_k}(1 - P_{FA})^{M_k - m_k}}{{M_k \choose m_k - 1} P_{FA}^{m_k - 1}(1 - P_{FA})^{M_k - m_k + 1}} \\
+&= (1 - P_D) m_k \frac{\frac{M_k!}{m_k !(M_k - m_k)!} P_{FA}}{\frac{M_k !}{(m_k - 1)!(M_k - m_k + 1)!}(1 - P_{FA})} \\
+&= (1 - P_D) m_k \frac{M_k - m_k + 1}{m_k}PP_{FA} \frac{1}{1 - P_{FA}} \\
+&= (1 - P_D) P_{FA}M_k \frac{1 - \frac{m_k - 1}{M_k}}{1 - P_{FA}}.
+\end{aligned}\end{equation}
+For $a_k > 0$, the result is the same as in b), however since we scaled with $V_c$ in that expression, to obtain the same result, we must do the same here (or the opposite in fact). As a result, we get
+\begin{equation}\begin{aligned}
+\Pr(a_k | Z_{1:k})
+&\propto
+(1 - P_D) \frac{P_{FA}M_k}{V_k} \frac{1 - \frac{m_k - 1}{M_k}}{1 - P_{FA}}
+\end{aligned}\end{equation}
+when $a_k = 0$.
+
+\subsection{}
+As the number of bernoulli trials ($M_k$) grows large in a binomial distribution, it approximates a poisson distribution. We can see this here by looking at when $\frac{m_k - 1}{M_k} \approx 0$ and $P_{FA} \approx 0$ (the probability for each particular event vanishes as the number of trials grows). With that, the last fraction approximates $1$ and $\frac{P_{FA}M_k}{V_k} \approx \lambda$, meaning $\Pr(a_k | Z_{1:k}) \approx \lambda (1 - P_D)$, i.e. the poisson distribution is a good approximation in this case.
 
 \end{document}
-
