@@ -63,7 +63,7 @@ P_0 = 10I_3,
 \end{aligned}\end{equation}
 where $I_3$ denotes the $3 \times 3$-identity-matrix, and input
 \begin{equation}\begin{aligned}
-u(t) = 10 \sin(t)
+u(t) = 5 \sin(t)
 \end{aligned}\end{equation}
 as this yields sufficiently fast parameter convergence. Our initial guess without the weights before the identity matrix and the sine, the estimates converge very slowly to the real value and ends up with a significant error in the end. The good convergence is plotted in figure \ref{fig:pure}.
 
@@ -72,6 +72,31 @@ as this yields sufficiently fast parameter convergence. Our initial guess withou
 \includegraphics[width=0.5\textwidth, trim={5cm 9cm 5cm 9cm, trim}]{pure}
 \caption{Parameter convergence with pure least squares adaptive law}
 \label{fig:pure}
+\end{figure}
+
+\subsection{}
+Letting the mass change after some time by defining it
+\begin{equation}\begin{aligned}
+m(t) = 20(2 - e^{-0.01(t-20)})
+\end{aligned}\end{equation}
+for $t \geq 20$s, the pure least-squares algorithm starts to face issues. In figure \ref{fig:varying-mass-bad} we see how the mass estimate struggles to climb up to where it should be.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\textwidth, trim={5cm 9cm 5cm 9cm, trim}]{varying-mass-bad}
+\caption{Bad parameter convergence with pure LS due to varying parameters}
+\label{fig:varying-mass-bad}
+\end{figure}
+The problem is that the old error is accumulated with pure least squares. As a result, when the parameters change, the LS algorithm still needs to fight the old error instead of work against the more recent error. If we instead add a forgetting factor to our least squares algorithm, i.e. let
+\begin{equation}\begin{aligned}
+\dot P &= \beta P -P \frac{\phi \phi^\top}{m^2}P,
+\end{aligned}\end{equation}
+we end up with a much better result as shown in figure \ref{fig:varying-mass-forget}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\textwidth, trim={5cm 9cm 5cm 9cm, trim}]{varying-mass-forget}
+\caption{Good parameter convergence using LS with forgetting factor $\beta = 0.1$ and varying parameters}
+\label{fig:varying-mass-forget}
 \end{figure}
 
 \end{document}

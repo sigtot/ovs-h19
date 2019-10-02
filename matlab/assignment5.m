@@ -7,8 +7,8 @@ N       = 30000; % number of samples
 t       = 0:h:h*(N-1);
 
 %% Insert true system
-%m = @(n) 20*(2-exp(-0.01*(t(n)-20)));
-m = @(n) 20;
+m = @(n) meme(t(n), 20, 20*(2-exp(-0.01*(t(n)-20))), 20);
+%m = @(n) 20;
 beta = 0.1;
 k = 5;
 A = @(n) [0       1
@@ -38,6 +38,7 @@ theta   = zeros(3, N);
 U       = zeros(N-1,1);
 masses  = zeros(1, N);
 P       = zeros(3, 3, N);
+beta = 0.1;
 
 % Initial estimates
 theta(:,1) = [0; 0; 0];
@@ -69,7 +70,7 @@ for n = 1:N-1
     epsilon         = z - theta(:, n)'*phi;
 
     % Update law
-    P_dot = -P(:, :, n) * (phi) * (phi)' * P(:, :, n);
+    P_dot = -P(:, :, n) * (phi) * (phi)' * P(:, :, n) + beta*P(:, :, n);
     P(:, :, n+1) = P(:, :, n) + h*P_dot;
     theta_dot       = P(:, :, n+1)*epsilon*phi;
     theta(:, n+1)   = theta(:, n) + h*theta_dot;
