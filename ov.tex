@@ -89,4 +89,18 @@ when $a_k = 0$.
 \subsection{}
 As the number of bernoulli trials ($M_k$) grows large in a binomial distribution, it approximates a poisson distribution. We can see this here by looking at when $\frac{m_k - 1}{M_k} \approx 0$ and $P_{FA} \approx 0$ (the probability for each particular event vanishes as the number of trials grows). With that, the last fraction approximates $1$ and $\frac{P_{FA}M_k}{V_k} \approx \lambda$, meaning $\Pr(a_k | Z_{1:k}) \approx \lambda (1 - P_D)$, i.e. the poisson distribution is a good approximation in this case.
 
+\section{}
+\subsection{}
+In single target tracking, we assume that only a single measurement originates from the target, however often encouter multiple measurements. This means we have a mixture of the different possible measurements. In other words, each measurement is a component, and it is weighted by the probability of it orginating from the target. These are the probabilities we wound in task 2. The main complicating factors of this is the fact that mixtures in general must be reduced to a single gaussian for each timestep, thereby losing information to the approximation. Not doing this however would result in the number of mixtures increasing exponentially.
+
+\subsection{}
+The PDA does not include any concept of target existance, only detection. Without that last state, we cannot express situations where the target is simply not there. This is a problem e.g. in situations where the target leaves the tracking area. An IPDA can then correctly predict that the target has dissapeared, whereas a regular PDA will simply keep predicting, albeit without correct measurements as inputs, only previous states and the model, usually resulting in a very wrong track.
+
+\subsection{}
+When using IPDA instead of PDA, we gain another component in the mixture for every timestep. As explained previously, this makes things more complicated and our predictions less precise due to the guassians being reduced.
+
+\section{}
+
+
+
 \end{document}
