@@ -30,7 +30,7 @@ classdef PDAF
             % xp (n x 1): predicted mean
             % Pp (n x n): predicted covariance
             
-            [xp, Pp] = %...
+            [xp, Pp] = obj.ekf.predict(x, P, Ts);
         end
         
         function gated = gate(obj, Z, x, P)
@@ -47,7 +47,8 @@ classdef PDAF
             gSquared = obj.gateSize;
             
             for j = 1:m
-                gated(j) = %...
+                g = obj.ekf.NIS(Z(:, j), x, P);
+                gated(j) = g <= gSquared;
             end
         end
         
@@ -74,8 +75,8 @@ classdef PDAF
             % calculate log likelihood ratios
             ll(1) = logPND + logClutter; 
             for j = 1:m
-                llCond(j) = %... %l^a
-                ll(j + 1) = %...
+                llCond(j) = obj.ekf.loglikelihood(Z(:, j), x, P);
+                ll(j + 1) = logPD + llCond(j);
             end
         end
         
@@ -93,7 +94,7 @@ classdef PDAF
            lls = obj.loglikelihoodRatios(Z, x, P);
            
            % probabilities
-           beta = %... 
+           beta = exp(lls) / sum(exp(lls));
         end
         
         function [xupd, Pupd] = conditionalUpdate(obj, Z, x, P)
@@ -119,8 +120,8 @@ classdef PDAF
             Pupd(:, :, 1) = P;
             
             % detected
-            for j = 1:m 
-               [xupd(:, j + 1), Pupd(:, :, j + 1)] = %...
+            for j = 1:m
+                [xupd(:, j + 1), Pupd(:, :, j + 1)] = obj.ekf.update(Z(:, j), x, P);
             end
         end
         
@@ -134,7 +135,7 @@ classdef PDAF
             % xred (n x 1): the mean of the mixture
             % Pred (n x n): the covariance of the mixture
             
-            [xred, Pred] = %... % Hint: reduceGaussMix from assignment 3
+            [xred, Pred] = reduceGaussMix(beta, x, P);
         end
         
         function [xupd, Pupd] = update(obj, Z, x, P)
@@ -148,17 +149,17 @@ classdef PDAF
             % Pupd (n x n): the covariance of the PDAF update
             
             % remove the not gated measurements from consideration
-            gated = % ... 
+            gated = obj.gate(Z, x, P);
             Zg = Z(:, gated);
             
             % find association probabilities
-            beta = % ...
+            beta = obj.associationProbabilities(Zg, x, P);
             
             % find the mixture components pdfs
-            [xcu, Pcu] = %...
+            [xcu, Pcu] = obj.conditionalUpdate(Zg, x, P);
             
             % reduce mixture
-            [xupd, Pupd] = %...
+            [xupd, Pupd] = obj.reduceMixture(beta, xcu, Pcu);
         end
     end
 end
