@@ -10,6 +10,7 @@
 \usepackage{listings}
 \usepackage{siunitx}
 \usepackage[section]{placeins}
+\usepackage{float}
 
 
 
@@ -31,6 +32,47 @@
 \section{4.9 I\&S (c,d,e)}
 \setcounter{subsection}{2}
 \subsection{}
+We define the MSD system as in assignment 4, having
+\begin{equation}\begin{aligned}
+\dot x = Ax + bu,
+\end{aligned}\end{equation}
+where
+\begin{equation}\begin{aligned}
+A =
+\begin{bmatrix}
+0 & 1 \\
+-\frac{k}{m} & -\frac{\beta}{m} \\
+\end{bmatrix}, \quad \text{and} \quad
+b =
+\begin{bmatrix}
+0\\
+\frac{1}{m}\\
+\end{bmatrix}.
+\end{aligned}\end{equation}
+We use the pure least-squares adaptive law from table 4.3 this time. That is,
+\begin{equation}\begin{aligned}
+\label{eq:pure_least_squares}
+\dot \theta &= P \epsilon \phi, \quad \text{and} \\
+\dot P &= -P \frac{\phi \phi^\top}{m^2}P, \quad P(0) = P_0
+\end{aligned}\end{equation}
+\subsection{}
+As with the state, we use forward euler to simulate the dynamics in \eqref{eq:pure_least_squares}.
+After tuning, we decide on the initial $P$ matrix
+\begin{equation}\begin{aligned}
+P_0 = 10I_3,
+\end{aligned}\end{equation}
+where $I_3$ denotes the $3 \times 3$-identity-matrix, and input
+\begin{equation}\begin{aligned}
+u(t) = 10 \sin(t)
+\end{aligned}\end{equation}
+as this yields sufficiently fast parameter convergence. Our initial guess without the weights before the identity matrix and the sine, the estimates converge very slowly to the real value and ends up with a significant error in the end. The good convergence is plotted in figure \ref{fig:pure}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\textwidth, trim={5cm 9cm 5cm 9cm, trim}]{pure}
+\caption{Parameter convergence with pure least squares adaptive law}
+\label{fig:pure}
+\end{figure}
 
 \end{document}
 
