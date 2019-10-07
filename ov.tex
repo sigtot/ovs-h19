@@ -71,7 +71,7 @@
 \begin{document}
 \maketitle
 \begin{multicols}{2}
-\section{The Eagle has Landed}
+\section{}
 \subsection{}
 We begin by simply creating a \texttt{Mesh} object from \texttt{lunarsurface.obj} and sending the vertex, colour, and index vectors into the \texttt{createVAO} function. As expected, the lunar surface renders correctly, albeit without any colors at this time, so it is completely white as shown in figure \ref{fig:white-surface} below.
 \begin{figure}[H]
@@ -122,14 +122,83 @@ This graph, when drawn using a basic pre-order recursive draw method yields the 
 \caption{A helicopter on the moon}
 \label{fig:chopper}
 \end{figure}
+
+
+\setcounter{section}{4}
+\section{}
+\subsection{}
+In the following figures, the helicopter has been rotated a quarter turn, but clearly does not obey the laws of light, and the dark side of the helicopter stays dark even though it is supposedly lit from the correct direction.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\columnwidth]{light-heli}
+\caption{The bright side of the helicopter}
+\label{fig:light-heli}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\columnwidth]{dark-heli}
+\caption{The dark side of the helicopter}
+\label{fig:dark-heli}
+\end{figure}
+
+The issue becomes even clearer when rendering multiple helicopters simultaneously as faces that point the same way get completely different shading. Observe how the two leftmost helicopters in figure \ref{fig:darkest} both have surfaces facing the camera, but one is lit and one is dark.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\columnwidth]{darkest-heli}
+\caption{The two leftmost helicopters have very different shading}
+\label{fig:darkest}
+\end{figure}
+
+
+\setcounter{section}{6}
+\section{}
+\setcounter{subsection}{1}
+\subsection{Controllable Helicopter}
+We add another helicopter above the five figure-8 helicopters that we wish to control. The dynamics of this helicopter is a grossly simplified kind of helicopter dynamics, with no special motion whatsoever. You can however control it just fine using wasd.
+
+\begin{center}
+\begin{tabular}{ |l|l| }
+\hline
+w & forward\\
+a & rotate left\\
+s & backward\\
+d & rotate right\\
+space & up\\
+shift & down\\
+c & toggle control\\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Chase Camera}
+Implementing the controllable helicopter without also implementing a chase camera was simply not acceptable, and so it had to be done. As with the helicopter, the chase camera is also done in a simple barely-work fashion. The camera needs some sort of control law to smoothly bring it to its target and the major simplification in this case is that control of each coordinate, x, y and z are decoupled, i.e. x-control depends only on x, y depends only on y and so on. The control laws we then opted for were the following
+\begin{align*}
+x_{k+1} = x_k - v(x_k - \text{sgn}(x_k - r_k)R - r_k),
+\end{align*}
+where $x_k$ and $r_k$ respectively denote the given coordinate of the camera and the reference (the helicopter), $v$ denotes the camera "speed" gain and $R$ denotes the wanted chase radius. This law is used for both the x and the z coordinate, but for y we omit the sign function to ensure that the helicopter is always chased from above. The keen eye will notice that this doesn't really keep the camera in a circle around its target, but rather in a square-like shape, in fact it will move according to figure \ref{fig:quiver} below.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.69\columnwidth]{quiver.eps}
+\caption{Quiver plot of chase camera dynamics}
+\label{fig:quiver}
+\end{figure}
+We see that the camera will tend towards one of four stable points around the helicopter.
+
+Finally, once the camera motion was in place, making the camera look at its target was as simple as using the opengl \texttt{lookAt} function.
+
+Use the \texttt{c}-key to toggle between chase camera/helicopter control and the regular free-moving camera.
+
+\setcounter{subsection}{5}
+\subsection{}
+You wanted to be amazed, so here you go. I proudly present \textit{deepfry-shading}, or in other words, what happens when the \textit{uninitialized} output color vector is used to color the scene.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\columnwidth]{deepfry}
+\caption{Deepfried Helicopter}
+\label{fig:deepfry}
+\end{figure}
+
 \end{multicols}
-
-
-\appendix
-\section{C++ snippets}
-\begin{lstlisting}[language={C++}, caption={Vertices for 6 triangles}, label={lst:6_tris_1}]
-// hello world
-\end{lstlisting}
-
 \end{document}
-
