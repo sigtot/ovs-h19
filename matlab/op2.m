@@ -8,9 +8,9 @@ t       = 0:h:h*(N-1);
 
 %% Insert true system
 %m = @(n) meme(t(n), 20, 20*(2-exp(-0.01*(t(n)-20))), 20);
-m = @(n) 15;
+m = @(t) 15;
 beta = 0.2;
-k = 2;'
+k = 2;
 
 lambda_1 = 1;
 lambda_0 = 1;
@@ -24,7 +24,8 @@ Lambda = [1; lambda_1; lambda_0];
 
 %% Simulation MATLAB
 % Define input as a function of t
-u       = @(n) 20*sin(2*t(n)) + 0;
+%u       = @(n) 5*sin(2*t(n)) + 15;
+u       = @(t) 5*sin(2*t) + 15;
 
 % Memory allocation
 x       = zeros(2, N);
@@ -44,24 +45,25 @@ theta(:,1) = [0; 0; 0];
 masses(:,1) = m(1);
 
 % Initial P matrix
-P(:, :, 1) = 100*eye(3);
+P(:, :, 1) = 0.2*eye(3);
 
+%% Ode45
+y0 = [1; 1];
+[~, x_2] = ode45(@(t,y) superfunc(t, y, m, u, beta), t, y0);
+x_1 = 1/k * arrayfun(u, t)' + x_2(:, 1);
+
+%% Estimation loop
 % Main loop. Simulate using forward Euler (x[k+1] = x[k] + h*x_dot)
 for n = 1:N-1
-    x_2_ddot = 1/m(n) * (u(n) - beta * x_2(2,n));
-    x_2(2, n+1) = x_2(2, n) + h*x_2_ddot;
-    x_2(1, n+1) = x_2(1, n) + h*x_2(2, n+1);
-    x_1(:, n+1) = (1/k)*u(n) + x_2(1, n+1);
-
     % Generate z and phi by filtering known signals
-    x_z_n           = x_z + (A_f*x_z + B_f*(x_1(:, n) + u(n) - 1))*h;   % u is unfiltered 'z'
+    x_z_n           = x_z + (A_f*x_z + B_f*(x_1(n) + u(t(n)) - x_2(n, 1)))*h;   % u is unfiltered 'z'
     z               = C_f_1*x_z;                      % 1/Lambda * u
 
-    x_phi_aux_n     = x_phi_aux + (A_f*x_phi_aux + B_f*(x_1(:, n) - x_2(1, n)));
-    x_phi_n         = x_phi + (A_f*x_phi + B_f*x_2(1, n))*h;
-    phi             = [(C_f_3*x_phi_aux + D_f_3*(x_1(:, n) - x_2(1, n)));
-                       (C_f_2*x_phi + D_f_2*x_2(1, n));
-                       (C_f_1*x_phi + D_f_1*x_2(1, n))];
+    x_phi_aux_n     = x_phi_aux + (A_f*x_phi_aux + B_f*(x_1(n) - x_2(n, 1))) * h; % *h???
+    x_phi_n         = x_phi + (A_f*x_phi + B_f*x_2(n, 1))*h;
+    phi             = [(C_f_3*x_phi_aux + D_f_3*(x_1(n) - x_2(n, 1)));
+                       (C_f_2*x_phi + D_f_2*x_2(n, 1));
+                       (C_f_1*x_phi + D_f_1*x_2(n, 1))];
     
 
     % Calculate estimation error
@@ -103,8 +105,10 @@ legend('estimate','true value')
 title('Parameter estimates')
 xlabel('t [s]')
 
+%% Plot system
 figure
 plot(t, x_1); hold on;
-plot(t, x_2(1, :)); hold off;
-legend('x1', 'x2')
+plot(t, x_2(:, 1));
+plot(t, x_2(:, 2)); hold off;
+legend('y1', 'y2', 'y2_{dot}')
 grid
