@@ -28,31 +28,37 @@ Note that every time you want to work on the assignment, you should run `source 
 
 You may refer to [this page](https://conda.io/docs/user-guide/tasks/manage-environments.html) for more detailed instructions on managing virtual environments with Anaconda.
 
-## Installing requirements
-To install requirements you can use either pip or conda. First, activate and enter your environment with 
+## Installing requirements for TDT4195
+We use several python packages in this course. To install requirements you can use either pip or conda. First, activate and enter your environment with 
 
 ```bash
 source activate tdt4195
 ```
 
-Then, you can install packages with pip:
 
+
+Then install pytorch and torchvision by the following command
+
+**MACOS:** 
 ```bash
-pip install package_name
+conda install pytorch torchvision -c pytorch
 ```
 
-or, with conda:
+**Linux or Windows:**
 ```bash
-conda install package_name
+conda install pytorch torchvision cpuonly -c pytorch
 ```
 
-You can also use a requirements.txt file to install packages with pip
+You can also follow the tutorial on [the pytorch website](https://pytorch.org/get-started/locally/).
+
+**Note**, if you have a PC with NVIDIA GPU (Linux or windows), you need to install CUDA and CUDNN first if you want to utilize your GPU. Installing CUDA and CUDNN is outside of the scope for this tutorial.
+
+Finally, install tqdm.
 
 ```bash
-pip install -r requirements.txt
+conda install tqdm
 ```
 
-A requirements.txt is just a list of python packages, and pip will sequentially go through it and install the packages.
 
 
 ## Launching jupyter notebook
