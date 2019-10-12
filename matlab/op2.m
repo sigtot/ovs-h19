@@ -1,5 +1,5 @@
-close all;
-clear;
+%close all;
+%clear;
 
 %% Create time
 h       = 0.01;  % sample time (s)
@@ -12,8 +12,8 @@ m = @(t) 15;
 beta = 0.2;
 k = 2;
 
-lambda_1 = 1;
-lambda_0 = 1;
+lambda_1 = 30;
+lambda_0 = 100;
 Lambda = [1; lambda_1; lambda_0];
 
 %% Define filters
@@ -25,7 +25,7 @@ Lambda = [1; lambda_1; lambda_0];
 %% Simulation MATLAB
 % Define input as a function of t
 %u       = @(n) 5*sin(2*t(n)) + 15;
-u       = @(t) 5*sin(2*t) + 15;
+u       = @(t) 50*sin(2*t) + 20*cos(3*t) +30*sin(2.5*t + 5) + 15;
 
 % Memory allocation
 x       = zeros(2, N);
@@ -35,17 +35,17 @@ x_phi_aux = zeros(2, 1);
 theta   = zeros(3, N);
 U       = zeros(N-1,1);
 masses  = zeros(1, N);
-P       = zeros(3, 3, N);
 forget = 0.1;
 x_2 = zeros(2,N);
 x_1 = zeros(1,N);
 
 % Initial estimates
-theta(:,1) = [0; 0; 0];
+%theta(:,1) = [k, beta/k, m(1)/k];
+theta(:, 1) = [1, 1, 1];
 masses(:,1) = m(1);
 
 % Initial P matrix
-P(:, :, 1) = 0.2*eye(3);
+gamma   = diag([100, 100, 100]);  
 
 %% Ode45
 y0 = [1; 1];
@@ -61,19 +61,17 @@ for n = 1:N-1
 
     x_phi_aux_n     = x_phi_aux + (A_f*x_phi_aux + B_f*(x_1(n) - x_2(n, 1))) * h; % *h???
     x_phi_n         = x_phi + (A_f*x_phi + B_f*x_2(n, 1))*h;
-    phi             = [(C_f_3*x_phi_aux + D_f_3*(x_1(n) - x_2(n, 1)));
+    phi             = [(C_f_1*x_phi_aux + D_f_1*(x_1(n) - x_2(n, 1)));
                        (C_f_2*x_phi + D_f_2*x_2(n, 1));
-                       (C_f_1*x_phi + D_f_1*x_2(n, 1))];
+                       (C_f_3*x_phi + D_f_3*x_2(n, 1))];
     
 
     % Calculate estimation error
-    epsilon         = z - theta(:, n)'*phi;
+    epsilon         = (z - theta(:, n)'*phi)/(1 + 0.01*phi'*P(:, :, n)*phi);
 
     % Update law
-    P_dot = -P(:, :, n) * (phi) * (phi)' * P(:, :, n) + forget*P(:, :, n);
-    P(:, :, n+1) = P(:, :, n) + h*P_dot;
-    theta_dot       = P(:, :, n+1)*epsilon*phi;
-    theta(:, n+1)   = theta(:, n) + h*theta_dot;
+    theta_dot       = gamma*epsilon*phi;
+    theta(:, n+1)   = theta(:, n) + theta_dot*h;
 
     % Set values for next iteration
     x_phi           = x_phi_n;
@@ -82,12 +80,14 @@ for n = 1:N-1
     masses(:, n+1) = m(n+1);
 end
 
+
 % Plots
-figure
+fig1 = figure(1);
 subplot(3,1,1)
 plot(t, theta(3,:) .* theta(1,:)); hold on
 plot(t, masses(1,:)); hold off
 ylabel('m')
+title('Parameter estimates')
 legend('estimate','true value')
 grid
 subplot(3,1,2)
@@ -102,13 +102,13 @@ plot([t(1), t(end)],[k, k]); hold off
 ylabel('k')
 grid
 legend('estimate','true value')
-title('Parameter estimates')
 xlabel('t [s]')
-
+cd
 %% Plot system
-figure
+fig2 = figure(2);
 plot(t, x_1); hold on;
 plot(t, x_2(:, 1));
-plot(t, x_2(:, 2)); hold off;
+plot(t, x_2(:, 2));
+plot(t, u(t)); hold off;
 legend('y1', 'y2', 'y2_{dot}')
 grid
