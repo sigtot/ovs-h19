@@ -12,6 +12,15 @@ m = @(t) 15;
 beta = 0.3;
 k = 2;
 
+%% A priori knowledge
+k_l = 0.1;
+beta_l = 0;
+beta_h = 1;
+m_l = 10;
+tol = 0.1;
+
+
+%% Filter stuff
 lambda_1 = 20;
 lambda_0 = 50;
 Lambda = [1; lambda_1; lambda_0];
@@ -39,8 +48,12 @@ forget = 0.1;
 x_2 = zeros(2,N);
 x_1 = zeros(1,N);
 
-% Initial P matrix
+% Gainssss
 gamma   = diag([0.01, 5, 35]);  
+
+% Initial estimates
+theta_k(1) = k_l;
+theta_mb(:, 1) = [beta_l, m_l];
 
 %% Ode45
 y0 = [1; 1];
@@ -56,8 +69,12 @@ for n = 1:N-1
     % Calculate estimation error
     epsilon = (z - theta_k(:, n)'*phi)/(1 + 0.01*(phi')*phi);
 
-    % Update law
-    theta_k_dot  = gamma(1)*epsilon*phi;
+    % Update lawo
+    if theta_k(n) > k_l || ((theta_k(n) - tol < k_l && k_l < theta_k(n) + tol) && -gamma(1) * z * epsilon <= 0)
+        theta_k_dot  = gamma(1)*epsilon*phi;
+    else
+        theta_k_dot = 0;
+    end
     theta_k(n+1) = theta_k(n) + theta_k_dot*h;
 end
 
