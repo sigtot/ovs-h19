@@ -17,7 +17,17 @@ k_l = 0.1;
 beta_l = 0;
 beta_h = 1;
 m_l = 10;
-tol = 0.1;
+tol = 0.3;
+g_beta = @(beta) 1/2 - abs(beta - 1/2);
+g_k = @(k) k - k_l;
+g_m = @(m) m - m_l;
+
+dg_k = @(k) 1;
+dg_m = @(m) 1;
+dg_beta = @(beta) -(beta - 1/2) / abs(beta - 1/2);
+
+g_mb = @(thet) [g_beta(thet(1)); g_m(thet(2))];
+dg_mb = @(thet) [dg_beta(thet(1)); dg_m(thet(2))];
 
 
 %% Filter stuff
@@ -49,7 +59,7 @@ x_2 = zeros(2,N);
 x_1 = zeros(1,N);
 
 % Gainssss
-gamma   = diag([0.01, 5, 35]);  
+gamma   = diag([0.01, 20, 50]);  
 
 % Initial estimates
 theta_k(1) = k_l;
@@ -80,6 +90,9 @@ end
 
 %% Estimation loop for m and beta
 % Main loop. Simulate using forward Euler (x[k+1] = x[k] + h*x_dot)
+project = 1;
+z = 1;
+x_z = [-150;8.5];
 for n = 1:N-1
     % Generate z and phi by filtering known signals
     x_z_n           = x_z + (A_f*x_z + B_f*(u(t(n))))*h;   % u is unfiltered 'z'
@@ -92,9 +105,19 @@ for n = 1:N-1
 
     % Calculate estimation error
     epsilon         = (z - theta_mb(:, n)'*phi)/(1 + 0.01*(phi')*phi);
-
+    
+    dg_n = dg_mb(theta_mb(:, n));
     % Update law
-    theta_dot       = gamma(2:3, 2:3)*epsilon*phi;
+    if project
+        if all(g_mb(theta_mb(:, n)) > 0) || (min(abs(g_mb(theta_mb(:, n)) < tol)) && (gamma(2:3, 2:3)*epsilon*phi)'*dg_mb(theta_mb(:, n)) <= 0)
+            theta_dot = gamma(2:3, 2:3)*epsilon*phi;
+        else
+            % I had to flip this sign               ⌄ and i do not know why
+            theta_dot = gamma(2:3, 2:3)*epsilon*phi + gamma(2:3, 2:3)*(dg_n*dg_n')/(dg_n'*gamma(2:3, 2:3)*dg_n) * gamma(2:3, 2:3)*epsilon*phi;
+        end
+    else
+        theta_dot = gamma(2:3, 2:3)*epsilon*phi;
+    end
     theta_mb(:, n+1)   = theta_mb(:, n) + theta_dot*h;
 
     % Set values for next iteration
