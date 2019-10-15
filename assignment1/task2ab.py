@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import os
+import numpy as np
 
 image_output_dir = "image_processed"
 os.makedirs(image_output_dir, exist_ok=True)
@@ -10,17 +11,25 @@ def save_im(imname, im, cmap=None):
     plt.imsave(impath, im, cmap=cmap)
 
 
-def greyscale(im):
-    """ Converts an RGB image to greyscale
+def lin_lum(px: np.array(3)) -> int:
+    return int(0.2126 * px[0] + 0.7152 * px[1] + 0.0722 * px[2])
+
+
+def greyscale(rgb_img):
+    """ Converts an RGB image to sRGB greyscale
     
     Args:
-        im ([type]): [np.array of shape [H, W, 3]]
+        rgb_img ([type]): [np.array of shape [H, W, 3]]
     
     Returns:
-        im ([type]): [np.array of shape [H, W]]
+        grey_img ([type]): [np.array of shape [H, W]]
     """
-    # YOUR CODE HERE
-    return im
+    grey_img = np.empty((rgb_img.shape[:2]), dtype=int)
+    for i in range(rgb_img.shape[0]):
+        for j in range(rgb_img.shape[1]):
+            px = rgb_img[i][j]
+            grey_img[i][j] = lin_lum(px)
+    return grey_img
 
 
 def inverse(im):
@@ -38,7 +47,7 @@ def inverse(im):
 
 if __name__ == "__main__":
     im = plt.imread("images/lake.jpg")
-    im = greyscale(im)
-    inverse_im = inverse(im)
-    save_im("lake_greyscale.jpg", im, cmap="gray")
-    save_im("lake_inverse.jpg", inverse_im, cmap="gray")
+    gray_im = greyscale(im)
+    inverse_im = inverse(gray_im)
+    save_im("lake_greyscale.png", gray_im, cmap="gray")
+    save_im("lake_inverse.png", inverse_im, cmap="gray")
