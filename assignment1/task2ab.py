@@ -32,17 +32,20 @@ def greyscale(rgb_img):
     return grey_img
 
 
-def inverse(im):
+def inverse(grey_im):
     """ Finds the inverse of the greyscale image
     
     Args:
-        im ([type]): [np.array of shape [H, W]]
+        grey_im ([type]): [np.array of shape [H, W]]
     
     Returns:
         im ([type]): [np.array of shape [H, W]]
-    """    
-     # YOUR CODE HERE
-    return im
+    """
+    inv_im = np.empty_like(grey_im)
+    for i in range(grey_im.shape[0]):
+        for j in range(grey_im.shape[1]):
+            inv_im[i][j] = 255 - grey_im[i][j]
+    return inv_im
 
 
 if __name__ == "__main__":
