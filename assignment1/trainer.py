@@ -31,7 +31,7 @@ class Trainer:
             avg_loss = 0
             for batch_it, (images, target) in enumerate(
                     tqdm.tqdm(self.dataloader_train,
-                              desc=f"Training epoch {epoch}")):
+                              desc="Training epoch {}".format(epoch))):
                 # images has shape: [batch_size, 1, 28, 28]
                 # target has shape: [batch_size]
 

@@ -47,7 +47,8 @@ model = FullyConnectedModel()
 optimizer = torch.optim.SGD(model.parameters(),
                             lr=learning_rate)
 image_transform = torchvision.transforms.Compose([
-  torchvision.transforms.ToTensor()
+  torchvision.transforms.ToTensor(),
+  torchvision.transforms.Normalize((0.5,), (0.25,))
 ])
 dataloader_train, dataloader_val = dataloaders.load_dataset(batch_size, image_transform=image_transform)
 
@@ -76,4 +77,4 @@ plt.show()
 torch.save(model.state_dict(), "saved_model.torch")
 final_loss, final_acc = utils.compute_loss_and_accuracy(
     dataloader_val, model, loss_function)
-print(f"Final Test Cross Entropy Loss: {final_loss}. Final Test accuracy: {final_acc}")
+print("Final Test Cross Entropy Loss: {}. Final Test accuracy: {}".format(final_loss, final_acc))
