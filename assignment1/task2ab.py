@@ -39,7 +39,7 @@ def inverse(grey_im):
         grey_im ([type]): [np.array of shape [H, W]]
     
     Returns:
-        im ([type]): [np.array of shape [H, W]]
+        inv_im ([type]): [np.array of shape [H, W]]
     """
     inv_im = np.empty_like(grey_im)
     for i in range(grey_im.shape[0]):

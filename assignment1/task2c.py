@@ -12,28 +12,26 @@ def convolve_im(im, kernel):
         kernel ([type]): [np.array of shape [K, K]]
     
     Returns:
-        [type]: [np.array of shape [H, W, 3]. should be same as im]
+        [type]: [np.array of shape [H, W, 3]]
     """
-    kernel_offset_i = kernel.shape[0] // 2
-    kernel_offset_j = kernel.shape[1] // 2
-    for x in range(im.shape[0]):
-        for y in range(im.shape[1]):
+    kernel_offset = kernel.shape[0] // 2
+    im = np.pad(im, ((kernel_offset, kernel_offset), (kernel_offset, kernel_offset), (0, 0)), mode="constant")
+    for x in range(kernel_offset, im.shape[0] - kernel_offset):
+        for y in range(kernel_offset, im.shape[1] - kernel_offset):
             for c in range(im.shape[2]):
-                x_offset = x + kernel_offset_i
-                y_offset = y + kernel_offset_j
+                x_offset = x + kernel_offset
+                y_offset = y + kernel_offset
                 conv_val = 0
                 for i in range(kernel.shape[0]):
-                    for j in range(kernel.shape[1]):
-                        if 0 <= x_offset - i < im.shape[0] and 0 <= y_offset - j < im.shape[1]:
-                            conv_val += kernel[i, j] * im[x_offset - i, y_offset - j, c]
+                    conv_val += np.dot(kernel[i], im[x_offset - i, y_offset - kernel.shape[0] + 1:y_offset + 1, c][::-1])
                 im[x][y][c] = conv_val
-    return im
+    return im[kernel_offset:-kernel_offset, kernel_offset:-kernel_offset]
 
 
 if __name__ == "__main__":
     # Read image
     impath = os.path.join("images", "lake.jpg")
-    im = plt.imread(impath)
+    lake_im = plt.imread(impath)
 
     # Define the convolutional kernels
     h_a = np.ones((3, 3)) / 9
@@ -45,8 +43,8 @@ if __name__ == "__main__":
         [1, 4, 6, 4, 1],
     ]) / 256
     # Convolve images
-    smoothed_im1 = convolve_im(im.copy(), h_a)
-    smoothed_im2 = convolve_im(im, h_b)
+    smoothed_im1 = convolve_im(lake_im.copy(), h_a)
+    smoothed_im2 = convolve_im(lake_im, h_b)
 
     save_im("convolved_im_h_a.png", smoothed_im1)
     save_im("convolved_im_h_b.png", smoothed_im2)
@@ -55,9 +53,9 @@ if __name__ == "__main__":
     assert isinstance(smoothed_im1, np.ndarray), \
         "Your convolve function has to return a np.array. " +\
         "Was: {type(smoothed_im1)}"
-    assert smoothed_im1.shape == im.shape, \
-        "Expected smoothed im ({smoothed_im1.shape}" + \
-        "to have same shape as im ({im.shape})"
-    assert smoothed_im2.shape == im.shape, \
-        "Expected smoothed im ({smoothed_im1.shape}" + \
-        "to have same shape as im ({im.shape})"
+    assert smoothed_im1.shape == lake_im.shape, \
+        "Expected smoothed lake_im ({smoothed_im1.shape}" + \
+        "to have same shape as lake_im ({lake_im.shape})"
+    assert smoothed_im2.shape == lake_im.shape, \
+        "Expected smoothed lake_im ({smoothed_im1.shape}" + \
+        "to have same shape as lake_im ({lake_im.shape})"
