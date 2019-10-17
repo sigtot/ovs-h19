@@ -14,17 +14,13 @@ def convolve_im(im, kernel):
     Returns:
         [type]: [np.array of shape [H, W, 3]]
     """
-    kernel_offset = kernel.shape[0] // 2
+    K = kernel.shape[0]
+    kernel_offset = K // 2
     im = np.pad(im, ((kernel_offset, kernel_offset), (kernel_offset, kernel_offset), (0, 0)), mode="constant")
     for x in range(kernel_offset, im.shape[0] - kernel_offset):
         for y in range(kernel_offset, im.shape[1] - kernel_offset):
             for c in range(im.shape[2]):
-                x_offset = x + kernel_offset
-                y_offset = y + kernel_offset
-                conv_val = 0
-                for i in range(kernel.shape[0]):
-                    conv_val += np.dot(kernel[i], im[x_offset - i, y_offset - kernel.shape[0] + 1:y_offset + 1, c][::-1])
-                im[x][y][c] = conv_val
+                im[x][y][c] = np.dot(np.reshape(im[x-kernel_offset:x+kernel_offset+1, y - kernel_offset:y+kernel_offset+1, c], (K*K))[::-1], np.reshape(kernel, (K*K)))
     return im[kernel_offset:-kernel_offset, kernel_offset:-kernel_offset]
 
 
