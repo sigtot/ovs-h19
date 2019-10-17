@@ -4,6 +4,7 @@ import utils
 import dataloaders
 import torchvision
 from trainer import Trainer
+import numpy as np
 
 torch.random.manual_seed(0)
 
@@ -72,8 +73,15 @@ plt.legend()
 plt.xlabel("Number of Images Seen")
 plt.ylabel("Cross Entropy Loss")
 plt.savefig("training_loss.png")
-
 plt.show()
+
+# Plot weights
+weight = next(model.classifier.children()).weight.data
+
+for i in range(10):
+    mat = np.reshape(weight[i], (28, 28))
+    plt.imshow(mat, cmap="gray")
+    plt.savefig("weights_{}.png".format(i))
 torch.save(model.state_dict(), "saved_model.torch")
 final_loss, final_acc = utils.compute_loss_and_accuracy(
     dataloader_val, model, loss_function)
