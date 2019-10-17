@@ -1,2 +1,4 @@
 image_processed
 __pycache__
+report
+saved_model.torch
