@@ -34,4 +34,7 @@ There might be minor typos or minor alterations to the starter code. If this hap
 git pull origin master
 ```
 
+## Working on Tulipan Computers
+
+See [here](working_on_tulipan_computers.md)
 
