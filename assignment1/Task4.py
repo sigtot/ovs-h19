@@ -17,10 +17,14 @@ class FullyConnectedModel(torch.nn.Module):
         num_input_nodes = 28*28
         # Number of classes in the MNIST dataset
         num_classes = 10
+        # Number of nodes in hidden layer
+        num_hidden_nodes = 64
 
         # Define our model
         self.classifier = torch.nn.Sequential(
-            torch.nn.Linear(num_input_nodes, num_classes),
+            torch.nn.Linear(num_input_nodes, num_hidden_nodes),
+            torch.nn.ReLU(),
+            torch.nn.Linear(num_hidden_nodes, num_classes),
         )
 
     def forward(self, x):
@@ -82,7 +86,7 @@ for i in range(10):
     mat = np.reshape(weight[i], (28, 28))
     plt.imshow(mat, cmap="gray")
     plt.savefig("weights_{}.png".format(i))
-torch.save(model.state_dict(), "saved_model.torch")
+torch.save(model.state_dict(), "deep_model.torch")
 final_loss, final_acc = utils.compute_loss_and_accuracy(
     dataloader_val, model, loss_function)
 print("Final Test Cross Entropy Loss: {}. Final Test accuracy: {}".format(final_loss, final_acc))
