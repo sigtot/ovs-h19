@@ -1,4 +1,6 @@
 # It should not be required to change this code
+from collections import OrderedDict
+
 import torch
 import tqdm
 import utils
@@ -24,8 +26,8 @@ class Trainer:
         self.optimizer = optimizer
 
     def train(self, num_epochs):
-        tracked_train_loss = {}
-        tracked_test_loss = {}
+        tracked_train_loss = OrderedDict()
+        tracked_test_loss = OrderedDict()
         global_step = 0
         for epoch in range(num_epochs):
             avg_loss = 0
