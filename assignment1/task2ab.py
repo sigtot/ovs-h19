@@ -14,10 +14,10 @@ def greyscale(im):
     """ Converts an RGB image to greyscale
     
     Args:
-        im ([type]): [np.array of shape [H, W, 3]]
+        im ([np.array]): [np.array of shape [H, W, 3]]
     
     Returns:
-        im ([type]): [np.array of shape [H, W]]
+        im ([np.array]): [np.array of shape [H, W]]
     """
     # YOUR CODE HERE
     return im
@@ -27,10 +27,10 @@ def inverse(im):
     """ Finds the inverse of the greyscale image
     
     Args:
-        im ([type]): [np.array of shape [H, W]]
+        im ([np.array]): [np.array of shape [H, W]]
     
     Returns:
-        im ([type]): [np.array of shape [H, W]]
+        im ([np.array]): [np.array of shape [H, W]]
     """    
      # YOUR CODE HERE
     return im

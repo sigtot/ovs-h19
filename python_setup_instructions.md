@@ -53,10 +53,15 @@ You can also follow the tutorial on [the pytorch website](https://pytorch.org/ge
 
 **Note**, if you have a PC with NVIDIA GPU (Linux or windows), you need to install CUDA and CUDNN first if you want to utilize your GPU. Installing CUDA and CUDNN is outside of the scope for this tutorial.
 
-Finally, install tqdm.
+Install tqdm.
 
 ```bash
 conda install tqdm
+```
+
+Finally, install [scikit-image](https://scikit-image.org/docs/stable/install.html):
+```bash
+conda install -c conda-forge scikit-image
 ```
 
 
