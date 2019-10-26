@@ -2,6 +2,7 @@
 import torch
 import tqdm
 import utils
+import collections
 
 torch.random.manual_seed(0)
 
@@ -23,8 +24,8 @@ class Trainer:
         self.optimizer = optimizer
 
     def train(self, num_epochs):
-        tracked_train_loss = {}
-        tracked_test_loss = {}
+        tracked_train_loss = collections.OrderedDict()
+        tracked_test_loss = collections.OrderedDict()
         global_step = 0
         for epoch in range(num_epochs):
             avg_loss = 0

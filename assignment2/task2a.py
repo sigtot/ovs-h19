@@ -34,6 +34,7 @@ if __name__ == "__main__":
     utils.save_im("chelsea_maxpooled.png", max_pooled_image)
 
     im = utils.create_checkerboard()
+    im = utils.uint8_to_float(im)
     utils.save_im("checkerboard.png", im)
     max_pooled_image = MaxPool2d(im, 2)
     utils.save_im("checkerboard_maxpooled.png", max_pooled_image)
