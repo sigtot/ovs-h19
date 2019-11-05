@@ -10,6 +10,7 @@
 \usepackage{listings}
 \usepackage{siunitx}
 \usepackage[section]{placeins}
+\usepackage{float}
 
 
 
@@ -44,6 +45,19 @@ Since we want the output image to have equal dimensions to the input, we require
 P_W = \frac{1}{2}(W_1 - W_1 + 5 - 1) = 2.
 \end{aligned}\end{equation}
 Since the filter is square, the horisontal and vertical padding is identical.
+
+\section{CNN Programming}
+\subsection{Maxpooling}
+
+\subsection{CNN MNIST Classifier}
+Implementing the CNN form Table 1 in the assignment and training it on the MNIST dataset yields final training loss of $0.044$ and $99\%$ accuracy(!). The plot of loss is shown in figure \ref{fig:task2} below.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\textwidth]{task2}
+\caption{Training loss of 4 epochs}
+\label{fig:task2}
+\end{figure}
+From figure \ref{fig:task2}, we do not see evidence of overfitting with these hyperparameters, as the test loss and final test accuracy corresponds well with the training loss. Had the test loss been significantly worse than the training loss however, one would suspect the network to be overfitted to the training data.
 
 \end{document}
 
