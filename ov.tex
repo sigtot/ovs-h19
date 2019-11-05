@@ -11,6 +11,8 @@
 \usepackage{siunitx}
 \usepackage[section]{placeins}
 \usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
 
 
 
@@ -48,6 +50,45 @@ Since the filter is square, the horisontal and vertical padding is identical.
 
 \section{CNN Programming}
 \subsection{Maxpooling}
+When maxpooling is applied to Chelsea, we get the result in figure \ref{fig:chelsea}.
+\begin{figure}[H]
+     \centering
+     \begin{subfigure}[b]{0.6\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{chelsea}
+         \caption{Original Chelsea}
+         \label{fig:chelsea_before}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.3\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{chelsea_maxpooled}
+         \caption{Post-maxpool Chelsea}
+         \label{fig:chelsea_after}
+     \end{subfigure}
+    \caption{Chelsea before and after maxpooling}
+    \label{fig:chelsea}
+\end{figure}
+The checkerboard has 2x2 checkers, meaning that the maxpooled image is simply a white square, as shown in figure \ref{fig:checkerboard}.
+\begin{figure}[H]
+     \centering
+     \begin{subfigure}[b]{0.6\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{checkerboard}
+         \caption{Original board}
+         \label{fig:checkerboard_before}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.3\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{checkerboard_maxpooled}
+         \caption{Post-maxpool board}
+         \label{fig:checkerboard_after}
+     \end{subfigure}
+    \caption{Chelsea before and after maxpooling}
+    \label{fig:checkerboard}
+\end{figure}
+
 
 \subsection{CNN MNIST Classifier}
 Implementing the CNN form Table 1 in the assignment and training it on the MNIST dataset yields final training loss of $0.044$ and $99\%$ accuracy(!). The plot of loss is shown in figure \ref{fig:task2} below.
