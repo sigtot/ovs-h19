@@ -1,10 +1,10 @@
-
 import torch
 import tqdm
 import utils
 import collections
 
 torch.random.manual_seed(0)
+
 
 class Trainer:
 
@@ -31,13 +31,12 @@ class Trainer:
             avg_loss = 0
             for batch_it, (images, target) in enumerate(
                     tqdm.tqdm(self.dataloader_train,
-                              desc=f"Training epoch {epoch}")):
+                              desc="Training epoch {}".format(epoch))):
                 # images has shape: [batch_size, 1, 28, 28]
                 # target has shape: [batch_size]
                 images, target = utils.to_cuda([images, target])
                 # Perform forward pass
                 logits = self.model(images)
-                
 
                 # Compute loss
                 loss = self.loss_function(logits, target)
@@ -53,8 +52,8 @@ class Trainer:
                 self.optimizer.zero_grad()
 
                 # Track the average loss for every 500th image
-                if batch_it % (500//self.batch_size) == 0 and batch_it != 0:
-                    avg_loss /= (500//self.batch_size)
+                if batch_it % (500 // self.batch_size) == 0 and batch_it != 0:
+                    avg_loss /= (500 // self.batch_size)
                     tracked_train_loss[global_step] = avg_loss
                     avg_loss = 0
                 global_step += self.batch_size
