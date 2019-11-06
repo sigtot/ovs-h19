@@ -100,5 +100,16 @@ Implementing the CNN form Table 1 in the assignment and training it on the MNIST
 \end{figure}
 From figure \ref{fig:task2}, we do not see evidence of overfitting with these hyperparameters, as the test loss and final test accuracy corresponds well with the training loss. Had the test loss been significantly worse than the training loss however, one would suspect the network to be overfitted to the training data.
 
+\subsection{}
+When trained for 10 epochs instead of two, the training loss develops like shown in figure \ref{fig:task2_10epochs} below.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\textwidth]{task2_10epochs}
+\caption{Training loss of 10 epochs}
+\label{fig:task2_10epochs}
+\end{figure}
+This time, the final validation accuracy is $99.1\%$ and the final validation loss is $0.024$. Again, we do not see evidence of overfitting as the test loss and training loss still correspond.
+
+
 \end{document}
 
