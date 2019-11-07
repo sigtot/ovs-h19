@@ -190,6 +190,36 @@ Larger scale versions of the two processed images are shown in figure \ref{fig:p
     \label{fig:processed_freq}
 \end{figure}
 
+\subsection{}
+We apply the notch filter to the clown image. The results of this can be seen in figure \ref{fig:clown_results}.
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{clown_results}
+\caption{Clown filter results}
+\label{fig:clown_results}
+\end{figure}
+Full size before and after images for the clown image, which clearly shows the periodic pattern present in the original image, and that it is removed almost entirely (except around the edges of the image) in the filtered image are shown in figure \ref{fig:clown_before_after}.
+\begin{figure}[H]
+     \centering
+     \begin{subfigure}[b]{0.45\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{clown}
+         \caption{Original}
+         \label{fig:clown_orig}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.45\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{clown_filtered}
+         \caption{Notch filtered}
+         \label{fig:clown_filtered}
+     \end{subfigure}
+    \caption{Clown image before and after notch filtering}
+    \label{fig:clown_before_after}
+\end{figure}
+The filter used here is an example of a notch filter. A notch filter damps a specific frequency range in the signal, which makes it the ideal tool to remove unwanted periodic patterns in an image, such as the pattern overlayed on the clown image. Looking at the Fourier transform of the input image, we can see four bright spots which correspond to the unwanted pattern. A notch filter can then be specifically crafted to eliminate the pattern from the image.
+
+
 
 
 \end{document}
