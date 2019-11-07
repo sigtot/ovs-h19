@@ -219,6 +219,21 @@ Full size before and after images for the clown image, which clearly shows the p
 \end{figure}
 The filter used here is an example of a notch filter. A notch filter damps a specific frequency range in the signal, which makes it the ideal tool to remove unwanted periodic patterns in an image, such as the pattern overlayed on the clown image. Looking at the Fourier transform of the input image, we can see four bright spots which correspond to the unwanted pattern. A notch filter can then be specifically crafted to eliminate the pattern from the image.
 
+\subsection{}
+We apply the sharpening technique as given in the assignment and obtain the result shown in figure \ref{fig:moon_sharpened_bad}.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\textwidth]{moon_sharpened_bad_contrast}
+\caption{Moon (original to the left, sharpened to the right)}
+\label{fig:moon_sharpened_bad}
+\end{figure}
+As we see, the contrast is worsened by adding the high pass filtered version of the image on top of the original. To combat this, we can apply histogram equalization afterwards, producing the results shown in figure \ref{fig:moon_sharpened_good}. This more clearly showns that the image has been sharpened. The original image has quite low contrast to begin with, so for fair comparison, we apply histogram equalization to that too.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\textwidth]{moon_sharpened}
+\caption{Moon sharpened and equalized}
+\label{fig:moon_sharpened_good}
+\end{figure}
 
 
 
