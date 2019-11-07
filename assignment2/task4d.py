@@ -26,7 +26,7 @@ def sharpen(im: np.array):
 
 if __name__ == "__main__":
     # DO NOT CHANGE
-    im = skimage.io.imread("images/moon.png")
+    im = skimage.data.moon()
     im = utils.uint8_to_float(im)
     sharpen_im = sharpen(im)
 
@@ -35,4 +35,4 @@ if __name__ == "__main__":
     # Concatenate the image, such that we get
     # the original on the left side, and the sharpened on the right side
     im = np.concatenate((im, sharpen_im), axis=1)
-    utils.save_im("moon_sharpened2.png", im)
+    utils.save_im("moon_sharpened.png", im)
