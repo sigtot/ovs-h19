@@ -4,11 +4,7 @@ import skimage
 import utils
 
 
-
-
-def convolve_im(im: np.array,
-                fft_kernel: np.array,
-                verbose=True):
+def convolve_im(im: np.array, fft_kernel: np.array, verbose=True):
     """ Convolves the image (im) with the frequency kernel (fft_kernel),
         and returns the resulting image.
 
@@ -22,18 +18,31 @@ def convolve_im(im: np.array,
     Returns:
         im: np.array of shape [H, W]
     """
-    ### START YOUR CODE HERE ### (You can change anything inside this block)
-    conv_result = im
+    if im.shape != fft_kernel.shape:
+        raise Exception("Error: image and fft_kernel should have equal dimensions")
+
+    f = np.fft.fft2(im)
+    fapplied = np.multiply(f, fft_kernel)
+    conv_result = np.real(np.fft.ifft2(fapplied))
+
     if verbose:
-        # Use plt.subplot to place two or more images beside eachother
         plt.figure(figsize=(20, 4))
-        # plt.subplot(num_rows, num_cols, position (1-indexed))
         plt.subplot(1, 5, 1)
         plt.imshow(im, cmap="gray")
-        plt.subplot(1, 5, 5) 
+        plt.title("Original")
+        plt.subplot(1, 5, 2)
+        plt.imshow(np.fft.fftshift(fft_kernel), cmap="gray")
+        plt.title("Filter (shifted)")
+        plt.subplot(1, 5, 3)
+        plt.imshow(20*np.log(np.abs(np.fft.fftshift(f))), cmap="gray")
+        plt.title("FT (shifted)")
+        plt.subplot(1, 5, 4)
+        plt.imshow(20*np.log(np.abs(np.fft.fftshift(fapplied))), cmap="gray")
+        plt.title("FT filtered")
+        plt.subplot(1, 5, 5)
         plt.imshow(conv_result, cmap="gray")
+        plt.title("Result")
 
-    ### END YOUR CODE HERE ###
     return conv_result
 
 
