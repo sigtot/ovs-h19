@@ -19,16 +19,15 @@ def sharpen(im: np.array):
         [-1, 4, -1],
         [0, -1, 0]
     ])
-    im = skimage.exposure.equalize_hist(im + convolve_im(im, laplacian))
+    im = im + convolve_im(im, laplacian)
     plt.show()
     return im
 
 
 if __name__ == "__main__":
     # DO NOT CHANGE
-    im = skimage.data.moon()
+    im = skimage.io.imread("images/moon.png")
     im = utils.uint8_to_float(im)
-    im = skimage.exposure.equalize_hist(im)
     sharpen_im = sharpen(im)
 
     sharpen_im = utils.to_uint8(sharpen_im)
@@ -36,4 +35,4 @@ if __name__ == "__main__":
     # Concatenate the image, such that we get
     # the original on the left side, and the sharpened on the right side
     im = np.concatenate((im, sharpen_im), axis=1)
-    utils.save_im("moon_sharpened.png", im)
+    utils.save_im("moon_sharpened2.png", im)
