@@ -122,7 +122,7 @@ We plot the weights numbered 5, 8, 19, 22, and 34 in the first convolutional lay
 \subsection{}
 We see, as expected, how the filters more strongly activate those parts of the image that they are supposed to. The first filter for instance, resembles a simple edge detection filter although widened a bit, and indeed it brings out the stripes of the zebra the most, in addition to applying a light edge detection on the entire zebra. The second filter looks like a sobel as well, but it is rotated. Note how it does not bring out the zebra stripes by a lot, but it does apply some edge detection, especially on the edges of the zebra with similar orientation to it. The third filter is green and smooth, and seems to bring out the smooth grass background. For the fourth filter we have yet another, this time horisontal, edge detector. Notice how it does not activate on the vertical stripes of the zebra at all, and activates almost exclusively in the areas where the stripes are horisontal. Lastly, we have an almost entirely smooth, blue filter, which unsurprisingly brings out the smooth, blue sky.
 
-\section{Frequency domain filtering theory}
+\section{Frequency Domain Filtering Theory}
 \subsection{}
 To perform the convolution $f * g$ using the convolution theorem, we
 \begin{enumerate}
@@ -136,6 +136,26 @@ High pass filters damp the lowest frequencies of a function and preserves high-f
 
 \subsection{}
 The filter in a) corresponds to a high pass filter, but only in the vertical direction. In the horisontal, it damps all frequencies, also high ones. The filter in b) is a high pass filter – the center (low frequencies) are damped and the outer region is preserved. The final filter in c) is a low pass filter as only center frequencies (low frequencies) are preserved.
+
+\section{Frequency Domain Programming}
+\subsection{}
+We implement kernel convolution via the frequency domain using the convolution theorem. Applying a high pass filter on the \texttt{skimage.data.camera()} camera man image, we get the results shown in figure \ref{fig:cameraman_hp}.
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{camera_hp_verbose}
+\caption{Camera man high pass filtered}
+\label{fig:cameraman_hp}
+\end{figure}
+Applying a low pass filter on the same image results in the results in figure \ref{fig:cameraman_lp} below.
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{camera_lp_verbose}
+\caption{Camera man low pass filtered}
+\label{fig:cameraman_lp}
+\end{figure}
+
+
+
 
 \end{document}
 
