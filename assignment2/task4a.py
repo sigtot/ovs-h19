@@ -34,10 +34,10 @@ def convolve_im(im: np.array, fft_kernel: np.array, verbose=True):
         plt.imshow(np.fft.fftshift(fft_kernel), cmap="gray")
         plt.title("Filter (shifted)")
         plt.subplot(1, 5, 3)
-        plt.imshow(20*np.log(np.abs(np.fft.fftshift(f))), cmap="gray")
+        plt.imshow(20*np.log(np.abs(np.fft.fftshift(f)) + 0.01), cmap="gray")
         plt.title("FT (shifted)")
         plt.subplot(1, 5, 4)
-        plt.imshow(20*np.log(np.abs(np.fft.fftshift(fapplied))), cmap="gray")
+        plt.imshow(20*np.log(np.abs(np.fft.fftshift(fapplied)) + 0.01), cmap="gray")
         plt.title("FT filtered")
         plt.subplot(1, 5, 5)
         plt.imshow(conv_result, cmap="gray")
@@ -60,8 +60,7 @@ if __name__ == "__main__":
     frequency_kernel_high_pass = utils.create_high_pass_frequency_kernel(im, radius=50)
     image_high_pass = convolve_im(im, frequency_kernel_high_pass,
                                   verbose=verbose)
-
-    if verbose:
-        plt.show()
     utils.save_im("camera_low_pass.png", image_low_pass)
     utils.save_im("camera_high_pass.png", image_high_pass)
+    if verbose:
+        plt.show()

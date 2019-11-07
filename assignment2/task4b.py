@@ -4,11 +4,7 @@ import skimage
 import utils
 
 
-
-
-def convolve_im(im: np.array,
-                kernel: np.array,
-                verbose=True):
+def convolve_im(im: np.array, kernel: np.array, verbose=True):
     """ Convolves the image (im) with the spatial kernel (kernel),
         and returns the resulting image.
 
@@ -24,18 +20,35 @@ def convolve_im(im: np.array,
     Returns:
         im: np.array of shape [H, W]
     """
-    ### START YOUR CODE HERE ### (You can change anything inside this block)
+    H, W = im.shape[0], im.shape[1]
+    K = kernel.shape[0]
+    k_padded = np.pad(kernel, ((0, H - K), (0, W - K)), mode="constant")
+    if k_padded.shape != im.shape:
+        raise Exception("Padded kernel does not match image dimensions {} != {}", k_padded.shape, im.shape)
+    fk = np.fft.fft2(k_padded)
 
-    conv_result = im
+    f = np.fft.fft2(im)
+    fapplied = np.multiply(f, fk)
+    conv_result = np.real(np.fft.ifft2(fapplied))
 
     if verbose:
         # Use plt.subplot to place two or more images beside eachother
         plt.figure(figsize=(20, 4))
-        # plt.subplot(num_rows, num_cols, position (1-indexed))
         plt.subplot(1, 5, 1)
         plt.imshow(im, cmap="gray")
+        plt.title("Original")
+        plt.subplot(1, 5, 2)
+        plt.imshow(np.abs(np.fft.fftshift(fk)), cmap="gray")
+        plt.title("Filter")
+        plt.subplot(1, 5, 3)
+        plt.imshow(20*np.log(np.abs(np.fft.fftshift(f)) + 0.01), cmap="gray")
+        plt.title("FT (log)")
+        plt.subplot(1, 5, 4)
+        plt.imshow(20*np.log(np.abs(np.fft.fftshift(fapplied)) + 0.01), cmap="gray")
+        plt.title("FT filtered (log)")
         plt.subplot(1, 5, 5)
         plt.imshow(conv_result, cmap="gray")
+        plt.title("Result")
     ### END YOUR CODE HERE ###
     return conv_result
 
