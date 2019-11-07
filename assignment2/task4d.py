@@ -1,7 +1,9 @@
 import numpy as np
 import skimage
+import skimage.exposure
 import utils
 from task4b import convolve_im
+import matplotlib.pyplot as plt
 
 
 def sharpen(im: np.array):
@@ -17,8 +19,8 @@ def sharpen(im: np.array):
         [-1, 4, -1],
         [0, -1, 0]
     ])
-    ### START YOUR CODE HERE ### (You can change anything inside this block)
-    ### END YOUR CODE HERE ###
+    im = skimage.exposure.equalize_hist(im + convolve_im(im, laplacian))
+    plt.show()
     return im
 
 
@@ -26,6 +28,7 @@ if __name__ == "__main__":
     # DO NOT CHANGE
     im = skimage.data.moon()
     im = utils.uint8_to_float(im)
+    im = skimage.exposure.equalize_hist(im)
     sharpen_im = sharpen(im)
 
     sharpen_im = utils.to_uint8(sharpen_im)
