@@ -195,6 +195,25 @@ Applying a low pass filter on the same image results in the results in figure \r
 \caption{Camera man low pass filtered}
 \label{fig:cameraman_lp}
 \end{figure}
+Higher resolution versions of the final outputs are shown in figure \ref{fig:camera_hplp} below.
+\begin{figure}[H]
+     \centering
+     \begin{subfigure}[b]{0.45\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{camera_low_pass}
+         \caption{Low pass filtered camera man}
+         \label{fig:cammmmmmmlp}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.45\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{camera_high_pass}
+         \caption{High pass filtered camera man}
+         \label{fig:gauss_after}
+     \end{subfigure}
+    \caption{High pass and low pass filtered camera man}
+    \label{fig:camera_hplp}
+\end{figure}
 
 \subsection{}
 In this task we implement kernel convolution through the frequency plane. We must then pad the input kernel in the bottom left corner to match the dimensions of the input image before taking the Fourier transform. With a gaussian kernel, we get the results shown in figure \ref{fig:camera_gauss} below.
