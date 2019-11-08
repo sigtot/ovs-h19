@@ -4,7 +4,8 @@ import utils
 
 
 def MaxPool2d(im: np.array,
-              kernel_size: int):
+              kernel_size: int,
+    ):
     """ A function that max pools an image with size kernel size.
     Assume that the stride is equal to the kernel size, and that the kernel size is even.
 
