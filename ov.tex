@@ -227,7 +227,7 @@ We apply the sharpening technique as given in the assignment and obtain the resu
 \caption{Moon (original to the left, sharpened to the right)}
 \label{fig:moon_sharpened_bad}
 \end{figure}
-As we see, the contrast is worsened by adding the high pass filtered version of the image on top of the original. To combat this, we can apply histogram equalization afterwards, producing the results shown in figure \ref{fig:moon_sharpened_good}. This more clearly showns that the image has been sharpened. The original image has quite low contrast to begin with, so for fair comparison, we apply histogram equalization to that too.
+As we see, the contrast is worsened by adding the high pass filtered version of the image on top of the original. To better see the sharpening, we can apply histogram equalization before and after the sharpening operator, producing the results shown in figure \ref{fig:moon_sharpened_good}. This more clearly showns that the image has been sharpened.
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.7\textwidth]{moon_sharpened}
