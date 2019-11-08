@@ -66,6 +66,30 @@ Since the feature maps are of dimension 504x504 and subsampling is done with a 2
 \subsection{}
 The number of pooled feature maps must match the corresponding number of feature maps, so 12.
 
+\subsection{}
+This time, plugging in $F_W = 3$ and $W_1 = 252$ into \eqref{eq:padding_eq}, we get
+\begin{equation}\begin{aligned}
+W_2 = 252 - 3 + 1 = 250,
+\end{aligned}\end{equation}
+i.e. 250x250.
+
+\subsection{}
+The convolutional layers will have a total of
+\begin{equation}\begin{aligned}
+n_{1,2,3} &= 3 \cdot 5 \cdot 5 \cdot 32 + 32\\
+&+ 32 \cdot 5 \cdot 5 \cdot 64 + 64 \\
+&+ 64 \cdot 5 \cdot 5 \cdot 128 + 128 \\
+&= 258624
+\end{aligned}\end{equation}
+parameters to them. After these three layers, the image will have been maxpooled 3 times, bringing the resolution down to $32 / 2^3 = 4$. This means the flattening operation will create a vector of size $4 \cdot 4 \cdot 128 = 2048$.
+Consequently, the final two fully-connected layers will have a total number of
+\begin{equation}\begin{aligned}
+n_{4,5} &= 2048 \cdot 64 + 1\\
+&+ 64 \cdot 10 + 1 \\
+&= 131714
+\end{aligned}\end{equation}
+parameters. In total then, the CNN will have $n = n_{1,2,3} + n_{4,5} = 390338$ parameters.
+
 \section{CNN Programming}
 \subsection{Maxpooling}
 When maxpooling is applied to Chelsea, we get the result in figure \ref{fig:chelsea}.
