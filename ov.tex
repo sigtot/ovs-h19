@@ -36,6 +36,7 @@
 \subsection{}
 From equation (1) in the assignment,
 \begin{equation}\begin{aligned}
+\label{eq:padding_eq}
 W_2 = \frac{W_1 - F_W + 2 P_W}{S_W} + 1,
 \end{aligned}\end{equation}
 we get that the padding $P_W$ should be
@@ -47,6 +48,18 @@ Since we want the output image to have equal dimensions to the input, we require
 P_W = \frac{1}{2}(W_1 - W_1 + 5 - 1) = 2.
 \end{aligned}\end{equation}
 Since the filter is square, the horisontal and vertical padding is identical.
+
+\subsection{}
+We rewrite \eqref{eq:padding_eq} to
+\begin{equation}\begin{aligned}
+F_W = W_1 + S_W + P_W - S_W W_2
+\end{aligned}\end{equation}
+Inserting the numbers we get
+\begin{equation}\begin{aligned}
+F_W = 512 + 1 + 0 - 1 \cdot 504 = 9.
+\end{aligned}\end{equation}
+Again, since the input image is square, kernel height and width are the same so the dimensions are 9-by-9.
+
 
 \section{CNN Programming}
 \subsection{Maxpooling}
