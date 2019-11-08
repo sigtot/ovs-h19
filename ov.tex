@@ -63,6 +63,9 @@ Again, since the input image is square, kernel height and width are the same so 
 \subsection{}
 Since the feature maps are of dimension 504x504 and subsampling is done with a 2x2 neighborhood and stride 2, this resulution is effectively halved, so the resulting pooled feature maps will be of size 252x252.
 
+\subsection{}
+The number of pooled feature maps must match the corresponding number of feature maps, so 12.
+
 \section{CNN Programming}
 \subsection{Maxpooling}
 When maxpooling is applied to Chelsea, we get the result in figure \ref{fig:chelsea}.
