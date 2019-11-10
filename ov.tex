@@ -150,7 +150,7 @@ When trained for 10 epochs instead of two, the training loss develops like shown
 \caption{Training loss of 10 epochs}
 \label{fig:task2_10epochs}
 \end{figure}
-This time, the final validation accuracy is $99.1\%$ and the final validation loss is $0.024$. Again, we do not see evidence of overfitting as the test loss and training loss still correspond.
+This time, the final validation accuracy is $99.3\%$ and the final validation loss is $0.022$ and there is seemingly no evidence of overfitting form the loss plot. However, by calculating the final training loss and accuracy in addition to the validation, we find that it is $0.010$ and $99.7\%$, respectively. This means we do see slightly better performance on the training set than on the test set, meaning the network has indeed been slightly overfittet to the training data!
 
 \subsection{}
 We plot the weights numbered 5, 8, 19, 22, and 34 in the first convolutional layer of ResNet50 along with the corresponding activation on the input zebra image. These results are shown in \ref{fig:zebra_activation} below.
