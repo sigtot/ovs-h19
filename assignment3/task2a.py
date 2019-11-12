@@ -35,8 +35,7 @@ def otsu_thresholding(im: np.ndarray) -> int:
         mu1 = sum1 / omega1
 
         if (var := omega0 * omega1 * (mu0 - mu1) ** 2) > var_max:
-            var_max = var
-            t_max = t
+            var_max, t_max = var, t
 
     thresh = t_max
     im[im >= thresh] = 255
