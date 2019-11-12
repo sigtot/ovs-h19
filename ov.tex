@@ -80,7 +80,7 @@ The Canny edge detector uses hysterisis thresholding after edge detection instea
 
 
 \section{Segmentation}
-\subsection{Otsu's method}
+\subsection{Otsu's Method}
 We implement the Otsu's method and apply it to the fingerprint and apply it to images shown in figure \ref{fig:otsu}. For the thumbprint image, the optimal threshold is $t=153$ whereas for the polymer cell image, the optimal threshold is $t=181$.
 \begin{figure}[H]
     \centering
@@ -111,6 +111,25 @@ We implement the Otsu's method and apply it to the fingerprint and apply it to i
     \label{fig:otsu}
 \end{figure}
 
+\subsection{Region Growing}
+We implement the region growing method, where we consider a homogeneity criteria where a pixel is regarded as part of the region if it is less than a threshold away from the seed intensity value. The algorithm, when applied to the defective weld x-ray image produces the results shown in figure \ref{fig:region_growing} below.
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/before/defective-weld}
+        \caption{X-ray image of defective weld}
+    \end{subfigure}%
+    ~
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/defective-weld-segmented}
+        \caption{Segmented with region growing}
+    \end{subfigure}%
+    \caption{Image thresholded using region growing}
+    \label{fig:region_growing}
+\end{figure}
 
 
 \end{document}
