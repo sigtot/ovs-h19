@@ -10,6 +10,7 @@
 \usepackage{listings}
 \usepackage{siunitx}
 \usepackage{float}
+\usepackage{subcaption}
 \usepackage[section]{placeins}
 
 
@@ -40,7 +41,7 @@ Edge detection algorithms typically use small kernels, which will pick up both l
 Hysterisis thresholding is a type of adaptive thresholding where pixels are regarded as above the threshold if they are neighbor to some high-valued pixel. For this, the algorithm typically has two threshold levels, one higher and one lower. And a pixel can be considered above the threshold if it is at least above the lower threshold and it neighbors some pixel above the higher threshold.
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.45\textwidth]{hysterisis}
+\includegraphics[width=0.45\textwidth]{img/hysterisis}
 \caption{Hysterisis. Neighboring a bright pixel can be thought of as traversing the left-going curve, which will require a lower intensity to be regarded as above the threshold than when traversing the right-going curve.}
 \label{fig:hysterisis}
 \end{figure}
@@ -50,7 +51,7 @@ The Canny edge detector uses hysterisis thresholding after edge detection instea
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.8\textwidth]{hysterisis_skimage}
+\includegraphics[width=0.8\textwidth]{img/hysterisis_skimage}
 \caption{Hysterisis thresholding vs regular thresholding}
 \label{fig:hysterisis_skimage}
 \end{figure}
@@ -76,6 +77,41 @@ The Canny edge detector uses hysterisis thresholding after edge detection instea
 0 & 0 & 0 & 0 & 0 & 0 \\
 \end{bmatrix}
 \end{aligned}\end{equation}
+
+
+\section{Segmentation}
+\subsection{Otsu's method}
+We implement the Otsu's method and apply it to the fingerprint and apply it to images shown in figure \ref{fig:otsu}. For the thumbprint image, the optimal threshold is $t=153$ whereas for the polymer cell image, the optimal threshold is $t=181$.
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.25\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/before/thumbprint}
+        \caption{Thumbprint}
+    \end{subfigure}%
+    ~
+    \begin{subfigure}{0.25\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/thumbprint-segmented}
+        \caption{Seg. ($t=153$)}
+    \end{subfigure}%
+    ~
+    \begin{subfigure}{0.25\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/before/polymercell}
+        \caption{Polymer cell}
+    \end{subfigure}%
+    ~
+    \begin{subfigure}{0.25\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/polymercell-segmented}
+        \caption{Seg. ($t=181$)}
+    \end{subfigure}
+    \caption{Images thresholded with Otsu's method}
+    \label{fig:otsu}
+\end{figure}
+
+
 
 \end{document}
 
