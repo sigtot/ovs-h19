@@ -116,19 +116,41 @@ We implement the region growing method, where we consider a homogeneity criteria
 
 \begin{figure}[H]
     \centering
-    \begin{subfigure}{0.45\textwidth}
+    \begin{subfigure}{0.5\textwidth}
         \centering
         \includegraphics[width=\textwidth]{img/before/defective-weld}
         \caption{X-ray image of defective weld}
     \end{subfigure}%
     ~
-    \begin{subfigure}{0.45\textwidth}
+    \begin{subfigure}{0.5\textwidth}
         \centering
         \includegraphics[width=\textwidth]{img/defective-weld-segmented}
         \caption{Segmented with region growing}
     \end{subfigure}%
     \caption{Image thresholded using region growing}
     \label{fig:region_growing}
+\end{figure}
+
+\section{Morphology}
+\subsection{Opening and Closing}
+We apply first a closing operation, then an opening operation to the noisy image in figure \ref{fig:bin_before}, in both cases with a disk-shaped structuring element with radius $8$. The closing closes the holes in the triangle and the opening removes the small segments around it, resulting in the cleared up image in figure \ref{fig:bin_after}.
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/before/noisy}
+        \caption{Binary image with noise}
+        \label{fig:bin_before}
+    \end{subfigure}%
+    ~
+    \begin{subfigure}{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/noisy-filtered}
+        \caption{Noise removed with morphology}
+        \label{fig:bin_after}
+    \end{subfigure}%
+    \caption{Binary noise removal with morphology}
+    \label{fig:binary_morph}
 \end{figure}
 
 
