@@ -32,7 +32,7 @@
 
 \section{Theory}
 \subsection{}
-Opening is dilation of the erotion, i.e. $(A \ominus B) \oplus B$, whereas closing is the erosion of the dilation, i.e. $(A \oplus B) \ominus B$. The typical interpretation of these operations is that closing fills small holes in the image (removes small black objects) and opening removes small (white) objects.
+Opening is dilation of the erosion, i.e. $(A \ominus B) \oplus B$, whereas closing is the erosion of the dilation, i.e. $(A \oplus B) \ominus B$. The typical interpretation of these operations is that closing fills small holes in the image (removes small black objects) and opening removes small (white) objects. Opening and closing operations are idempotent, i.e. $(A \circ B) \circ B = A \circ B$ and $(A \bullet B) \bullet B = A \bullet B$.
 
 \subsection{}
 Edge detection algorithms typically use small kernels, which will pick up both large and tiny edges. Such tiny edges are often found all over an image and are typically caused by noise, texture and other features that we would normally not consider "real edges". To surpress these edges from appearing in the output, but still keep the dominant edges of the image, we can apply smoothing beforehand. The choice of blur comes down to choice of how detailed we want the edge detection to be. With little or no blur, all edges will be picked up, whereas with lots of blur, only dominant edges will show.
