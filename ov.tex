@@ -133,7 +133,7 @@ We implement the region growing method, where we consider a homogeneity criteria
 
 \section{Morphology}
 \subsection{Opening and Closing}
-We apply first a closing operation, then an opening operation to the noisy image in figure \ref{fig:bin_before}, in both cases with a disk-shaped structuring element with radius $8$. The closing closes the holes in the triangle and the opening removes the small segments around it, resulting in the cleared up image in figure \ref{fig:bin_after}.
+We apply first a closing operation, then an opening operation to the noisy image in figure \ref{fig:bin_before}, in both cases with a disk-shaped structuring element with radius $8$. The closing closes the holes in the triangle and the opening removes the small segments around it, resulting in the cleared up image in figure \ref{fig:bin_after}. The effect of the disk-shaped structuring element can be seen from the rounded corners of the triangle.
 \begin{figure}[H]
     \centering
     \begin{subfigure}{0.5\textwidth}
@@ -151,6 +151,15 @@ We apply first a closing operation, then an opening operation to the noisy image
     \end{subfigure}%
     \caption{Binary noise removal with morphology}
     \label{fig:binary_morph}
+\end{figure}
+
+\subsection{Distance Transform}
+We implement an erosion-based distance transform where the binary input image is continuously eroded until it is completely black, all the while accumulating the result of each erosion thereby making the parts of the shape that are furthest from any edge (in chessboard distance) the brightest. To optimize the algorithm, we use two buffers for the eroded image, one as the input of the erosion and the other as the output and swapping them after each iteration. The result of running this on the image in figure \ref{fig:bin_after} is shown in figure \ref{fig:dist_transform} below.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\textwidth]{img/noisy-distance}
+\caption{Distance transform applied to binary image}
+\label{fig:dist_transform}
 \end{figure}
 
 
