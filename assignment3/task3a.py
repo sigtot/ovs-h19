@@ -12,10 +12,10 @@ def remove_noise(im: np.ndarray) -> np.ndarray:
         return:
             (np.ndarray) of shape (H, W). dtype=np.bool
     """
-    ### START YOUR CODE HERE ### (You can change anything inside this block)
-    # You can also define other helper functions
+    selem = skimage.morphology.selem.disk(8)
+    im = skimage.morphology.binary_closing(im, selem)  # Close holes in triangle shape
+    im = skimage.morphology.binary_opening(im, selem)  # Remove small white fragments
     return im
-    ### END YOUR CODE HERE ### 
 
 
 if __name__ == "__main__":

@@ -14,18 +14,20 @@ def distance_transform(im: np.ndarray) -> np.ndarray:
         return:
             (np.ndarray) of shape (H, W). dtype=np.int32
     """
-    ### START YOUR CODE HERE ### (You can change anything inside this block)
-    # You can also define other helper functions
     assert im.dtype == np.bool
-    structuring_element = np.array([
+    selem = np.array([
         [1, 1, 1],
         [1, 1, 1],
         [1, 1, 1]
     ], dtype=bool)
-    result = im.astype(np.int32)
+    eroded_in = np.copy(im)
+    eroded_out = np.copy(im)
+    result = np.zeros(im.shape, np.int32)
+    while len(np.nonzero(eroded_in)[0]) > 0:
+        skimage.morphology.binary_erosion(eroded_in, selem=selem, out=eroded_out)
+        result += eroded_out
+        eroded_in, eroded_out = eroded_out, eroded_in  # Swap buffers
     return result
-    ### END YOUR CODE HERE ### 
-
 
 
 if __name__ == "__main__":
