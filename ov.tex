@@ -162,6 +162,35 @@ We implement an erosion-based distance transform where the binary input image is
 \label{fig:dist_transform}
 \end{figure}
 
+\subsection{Inner Boundary Extraction}
+We implement simple inner boundary extraction for a binary image $A$ with the operation
+\begin{equation}\begin{aligned}
+A_{\text{inner boundary}} = A - (A \ominus B)
+\end{aligned}\end{equation}
+where $\ominus$ denotes the erosion and $B$ is the structuring element. This effectively removes the entire interior of the image, leaving only the boundary. The result of this operation on applied on the image in figure \ref{fig:abe_before} is shown in figure \ref{fig:abe_after}.
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/before/lincoln}
+        \caption{Binary image of Abe Lincoln}
+        \label{fig:abe_before}
+    \end{subfigure}%
+    ~
+    \begin{subfigure}{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/lincoln-boundary}
+        \caption{The boundary of Abe Lincoln}
+        \label{fig:abe_after}
+    \end{subfigure}%
+    \caption{Inner boundary extraction}
+    \label{fig:binary_morph}
+\end{figure}
+This operation extracts the inner boundary, i.e. the boundary does not fully enclose the original image, as the outermost pixel row forms the boundary itself. Were we instead to compute the operation
+\begin{equation}\begin{aligned}
+A_{\text{outer boundary}} = (A \oplus B) - A,
+\end{aligned}\end{equation}
+where $\oplus$ denotes the dilation, we would get what is called the \textit{outer boundary}, which would fully enclose the oroginal image.
 
 \end{document}
 
