@@ -184,13 +184,34 @@ where $\ominus$ denotes the erosion and $B$ is the structuring element. This eff
         \label{fig:abe_after}
     \end{subfigure}%
     \caption{Inner boundary extraction}
-    \label{fig:binary_morph}
+    \label{fig:my_boy_abe}
 \end{figure}
 This operation extracts the inner boundary, i.e. the boundary does not fully enclose the original image, as the outermost pixel row forms the boundary itself. Were we instead to compute the operation
 \begin{equation}\begin{aligned}
 A_{\text{outer boundary}} = (A \oplus B) - A,
 \end{aligned}\end{equation}
 where $\oplus$ denotes the dilation, we would get what is called the \textit{outer boundary}, which would fully enclose the oroginal image.
+
+\subsection{Hole Filling}
+We implement the given algorithm and apply it to the binary image of balls with reflection. As we can see in figure \ref{fig:balls_after}, the algorithm filles the holes in the input image and makes the reflections dissappear while preserving the circular structure of the balls perfectly.
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/before/balls-with-reflections}
+        \caption{Binary image of balls with reflection}
+        \label{fig:balls_before}
+    \end{subfigure}%
+    ~
+    \begin{subfigure}{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/balls-with-reflections-filled}
+        \caption{Reflections removed with hole filling}
+        \label{fig:balls_after}
+    \end{subfigure}%
+    \caption{Removing reflections in binary image with hole filling}
+    \label{fig:balls}
+\end{figure}
 
 \end{document}
 
