@@ -1,0 +1,217 @@
+\documentclass[]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{graphicx}
+\usepackage{capt-of}
+\usepackage{listings}
+\usepackage{siunitx}
+\usepackage{float}
+\usepackage{subcaption}
+\usepackage[section]{placeins}
+
+
+
+% Oppgavenummerering %
+\renewcommand\thesection{Task \arabic{section}}
+\renewcommand\thesubsection{\alph{subsection})}
+
+% Bevis
+\newcommand\TombStone{\rule{.5em}{.5em}}
+\renewcommand\qedsymbol{\TombStone}
+\renewcommand{\proofname}{Bevis.} % Norske bevis
+
+\title{TDT4195 – IP Assignment 3}
+\author{Sigurd Totland | MTTK}
+
+\begin{document}
+\maketitle
+
+\section{Theory}
+\subsection{}
+Opening is dilation of the erosion, i.e. $(A \ominus B) \oplus B$, whereas closing is the erosion of the dilation, i.e. $(A \oplus B) \ominus B$. The typical interpretation of these operations is that closing fills small holes in the image (removes small black objects) and opening removes small (white) objects. Opening and closing operations are idempotent, i.e. $(A \circ B) \circ B = A \circ B$ and $(A \bullet B) \bullet B = A \bullet B$.
+
+\subsection{}
+Edge detection algorithms typically use small kernels, which will pick up both large and tiny edges. Such tiny edges are often found all over an image and are typically caused by noise, texture and other features that we would normally not consider "real edges". To surpress these edges from appearing in the output, but still keep the dominant edges of the image, we can apply smoothing beforehand. The choice of blur comes down to choice of how detailed we want the edge detection to be. With little or no blur, all edges will be picked up, whereas with lots of blur, only dominant edges will show.
+
+\subsection{}
+Hysterisis thresholding is a type of adaptive thresholding where pixels are regarded as above the threshold if they are neighbor to some high-valued pixel. For this, the algorithm typically has two threshold levels, one higher and one lower. And a pixel can be considered above the threshold if it is at least above the lower threshold and it neighbors some pixel above the higher threshold.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.45\textwidth]{img/hysterisis}
+\caption{Hysterisis. Neighboring a bright pixel can be thought of as traversing the left-going curve, which will require a lower intensity to be regarded as above the threshold than when traversing the right-going curve.}
+\label{fig:hysterisis}
+\end{figure}
+
+\subsection{}
+The Canny edge detector uses hysterisis thresholding after edge detection instead of regular thresholding because it is better at connecting edges and removing noise that is not clearly part of an edge. The example image in figure \ref{fig:hysterisis_skimage} below from the \texttt{skimage} docs shows how hysterisis thresholding, when applied after a sobel edge detection filter preserves edges and removes unwanted noise much better than regular thresholding.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{img/hysterisis_skimage}
+\caption{Hysterisis thresholding vs regular thresholding}
+\label{fig:hysterisis_skimage}
+\end{figure}
+
+\subsection{}
+\begin{equation}\begin{aligned}
+\begin{bmatrix}
+0 & 0 & 0 & 0 & 0 & 0 \\
+1 & 0 & 0 & 0 & 1 & 0 \\
+0 & 1 & 1 & 1 & 0 & 0 \\
+1 & 0 & 0 & 0 & 1 & 0 \\
+0 & 0 & 1 & 0 & 0 & 0 \\
+0 & 0 & 0 & 0 & 0 & 0 \\
+\end{bmatrix}
+\oplus
+\begin{bmatrix} 1 & 1 & 1 \end{bmatrix} =
+\begin{bmatrix}
+0 & 0 & 0 & 0 & 0 & 0 \\
+1 & 1 & 0 & 1 & 1 & 1 \\
+1 & 1 & 1 & 1 & 1 & 0 \\
+1 & 1 & 0 & 1 & 1 & 1 \\
+0 & 1 & 1 & 1 & 0 & 0 \\
+0 & 0 & 0 & 0 & 0 & 0 \\
+\end{bmatrix}
+\end{aligned}\end{equation}
+
+
+\section{Segmentation}
+\subsection{Otsu's Method}
+We implement the Otsu's method and apply it to the fingerprint and apply it to images shown in figure \ref{fig:otsu}. For the thumbprint image, the optimal threshold is $t=153$ whereas for the polymer cell image, the optimal threshold is $t=181$.
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.25\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/before/thumbprint}
+        \caption{Thumbprint}
+    \end{subfigure}%
+    ~
+    \begin{subfigure}{0.25\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/thumbprint-segmented}
+        \caption{Seg. ($t=153$)}
+    \end{subfigure}%
+    ~
+    \begin{subfigure}{0.25\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/before/polymercell}
+        \caption{Polymer cell}
+    \end{subfigure}%
+    ~
+    \begin{subfigure}{0.25\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/polymercell-segmented}
+        \caption{Seg. ($t=181$)}
+    \end{subfigure}
+    \caption{Images thresholded with Otsu's method}
+    \label{fig:otsu}
+\end{figure}
+
+\subsection{Region Growing}
+We implement the region growing method, where we consider a homogeneity criteria where a pixel is regarded as part of the region if it is less than a threshold away from the seed intensity value. The algorithm, when applied to the defective weld x-ray image produces the results shown in figure \ref{fig:region_growing} below.
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/before/defective-weld}
+        \caption{X-ray image of defective weld}
+    \end{subfigure}%
+    ~
+    \begin{subfigure}{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/defective-weld-segmented}
+        \caption{Segmented with region growing}
+    \end{subfigure}%
+    \caption{Image thresholded using region growing}
+    \label{fig:region_growing}
+\end{figure}
+
+\section{Morphology}
+\subsection{Opening and Closing}
+We apply first a closing operation, then an opening operation to the noisy image in figure \ref{fig:bin_before}, in both cases with a disk-shaped structuring element with radius $8$. The closing closes the holes in the triangle and the opening removes the small segments around it, resulting in the cleared up image in figure \ref{fig:bin_after}. The effect of the disk-shaped structuring element can be seen from the rounded corners of the triangle.
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/before/noisy}
+        \caption{Binary image with noise}
+        \label{fig:bin_before}
+    \end{subfigure}%
+    ~
+    \begin{subfigure}{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/noisy-filtered}
+        \caption{Noise removed with morphology}
+        \label{fig:bin_after}
+    \end{subfigure}%
+    \caption{Binary noise removal with morphology}
+    \label{fig:binary_morph}
+\end{figure}
+
+\subsection{Distance Transform}
+We implement an erosion-based distance transform where the binary input image is continuously eroded until it is completely black, all the while accumulating the result of each erosion thereby making the parts of the shape that are furthest from any edge (in chessboard distance) the brightest. To optimize the algorithm, we use two buffers for the eroded image, one as the input of the erosion and the other as the output and swapping them after each iteration. The result of running this on the image in figure \ref{fig:bin_after} is shown in figure \ref{fig:dist_transform} below.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\textwidth]{img/noisy-distance}
+\caption{Distance transform applied to binary image}
+\label{fig:dist_transform}
+\end{figure}
+
+\subsection{Inner Boundary Extraction}
+We implement simple inner boundary extraction for a binary image $A$ with the operation
+\begin{equation}\begin{aligned}
+A_{\text{inner boundary}} = A - (A \ominus B)
+\end{aligned}\end{equation}
+where $\ominus$ denotes the erosion and $B$ is the structuring element. This effectively removes the entire interior of the image, leaving only the boundary. The result of this operation on applied on the image in figure \ref{fig:abe_before} is shown in figure \ref{fig:abe_after}.
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/before/lincoln}
+        \caption{Binary image of Abe Lincoln}
+        \label{fig:abe_before}
+    \end{subfigure}%
+    ~
+    \begin{subfigure}{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/lincoln-boundary}
+        \caption{The boundary of Abe Lincoln}
+        \label{fig:abe_after}
+    \end{subfigure}%
+    \caption{Inner boundary extraction}
+    \label{fig:my_boy_abe}
+\end{figure}
+This operation extracts the inner boundary, i.e. the boundary does not fully enclose the original image, as the outermost pixel row forms the boundary itself. Were we instead to compute the operation
+\begin{equation}\begin{aligned}
+A_{\text{outer boundary}} = (A \oplus B) - A,
+\end{aligned}\end{equation}
+where $\oplus$ denotes the dilation, we would get what is called the \textit{outer boundary}, which would fully enclose the oroginal image.
+
+\subsection{Hole Filling}
+We implement the given algorithm and apply it to the binary image of balls with reflection. As we can see in figure \ref{fig:balls_after}, the algorithm filles the holes in the input image and makes the reflections dissappear while preserving the circular structure of the balls perfectly.
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/before/balls-with-reflections}
+        \caption{Binary image of balls with reflection}
+        \label{fig:balls_before}
+    \end{subfigure}%
+    ~
+    \begin{subfigure}{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/balls-with-reflections-filled}
+        \caption{Reflections removed with hole filling}
+        \label{fig:balls_after}
+    \end{subfigure}%
+    \caption{Removing reflections in binary image with hole filling}
+    \label{fig:balls}
+\end{figure}
+
+\end{document}
+
