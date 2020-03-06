@@ -1,0 +1,297 @@
+\documentclass[]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{graphicx}
+\usepackage{capt-of}
+\usepackage{listings}
+\usepackage{siunitx}
+\usepackage[section]{placeins}
+\usepackage{color}
+
+
+\definecolor{mygreen}{RGB}{28,172,0} % color values Red, Green, Blue
+\definecolor{mylilas}{RGB}{170,55,241}
+\lstset{language=Matlab,%
+    breaklines=true,%
+    morekeywords={matlab2tikz},
+    keywordstyle=\color{blue},%
+    morekeywords=[2]{1}, keywordstyle=[2]{\color{black}},
+    identifierstyle=\color{black},%
+    stringstyle=\color{mylilas},
+    commentstyle=\color{mygreen},%
+    showstringspaces=false,%without this there will be a symbol in the places where there is a space
+    numbers=left,%
+    numberstyle={\tiny \color{black}},% size of the numbers
+    numbersep=9pt, % this defines how far the numbers are from the text
+    emph=[1]{for, end, break}\emphstyle=[1]\color{red}, %some words to emphasise
+}
+
+
+% Oppgavenummerering %
+\renewcommand\thesection{Task \arabic{section}}
+\renewcommand\thesubsection{\alph{subsection})}
+
+% Bevis
+\newcommand\TombStone{\rule{.5em}{.5em}}
+\renewcommand\qedsymbol{\TombStone}
+\renewcommand{\proofname}{Bevis.} % Norske bevis
+
+\title{}
+\author{Sigurd Totland | MTTK}
+
+\begin{document}
+\maketitle
+
+\section{}
+\subsection{}
+Using bayes theorem for pdfs, total probability over $x$ and the fact that $\Pr(\delta | x) = p(\delta | x) = P_D(x)$, we get
+\begin{equation}\begin{aligned}
+\label{eq:badboi}
+p(x | \delta ) =  \frac{p(\delta | x) p(x)}{p(\delta)} = \frac{P_D(x)p(x)}{\int P_D(x) p(x) dx}.
+\end{aligned}\end{equation}
+From this, we observe that the denominator, being an integral over the entire state, is a constant in $x$, i.e. does not vary for different $x$. What we are then left with, is $p(\delta | x)$ equaling $p(x)$ scaled by $P_D(x)$ and a constant. Hence, if since $P_D(x)$ varies with $x$, $p(x | \delta) \neq p(x)$ in general. This is generally what we would expect, a radar for instance would have a larger probability of detecting objects closer to the radar, than those far away. If we however say that $P_D(x)$ is constant, we cannot know anything about the state given a detection, since the detection probability is independent from $x$. We see this from \eqref{eq:badboi} actually, as $P_D(x)$ being constant lets us take it out of the integral and get
+\begin{equation}\begin{aligned}
+p(x | \delta ) =  \frac{P_D(x)p(x)}{P_D(x) \int p(x) dx} = \frac{p(x)}{\int p(x) dx} = p(x)
+\end{aligned}\end{equation}
+since by definition $\int p(x) dx = 1$.
+
+\section{}
+\subsection{}
+Since each cell is a Bernoulli trial with probability $P_{FA}$ of success (the cells are assumed to be iid.), $M_k$ such trials is simply a Binomial distribution with $M_k$ trials and $P_{FA}$ probability.
+
+\subsection{}
+Inserting the pdf into theorem 7.3.1 we obtain for $a_k = 0$,
+\begin{equation}\begin{aligned}
+\Pr(a_k | Z_{1:k})
+&\propto (1 - P_D) m_k
+\frac{e^{-\lambda V_k}}{e^{-\lambda V_k}}
+\frac{(\lambda V_k)^{m_k}}{(\lambda V_k)^{m_k - 1}}
+\frac{(m_k - 1)!}{(m_k)!} \\
+&= (1 - P_D)m_k \lambda V_k \frac{1}{m_k} \\
+&= \lambda V_K (1 - P_D).
+\end{aligned}\end{equation}
+For $a_k > 0$ we obtain
+\begin{equation}\begin{aligned}
+\Pr(a_k | Z_{1:k})
+&\propto \frac{P_D}{c(z_k^{a_k})}l^{a_k}.
+\end{aligned}\end{equation}
+Inserting equation (7.14) as well as using $l^{a_k} = \mathcal{N}(z_k^{a_k} | \hat z_{k|k-1}, S_k)$, this becomes
+\begin{equation}\begin{aligned}
+\Pr(a_k | Z_{1:k})
+&\propto P_D V_K \mathcal{N}(z_k^{a_k} | \hat z_{k|k-1}, S_k).
+\end{aligned}\end{equation}
+Since both terms are scaled by $V_k$, they are proportional exactly as shown in Corollary 7.3.3.
+
+\subsection{}
+We have for $a_k = 0$,
+\begin{equation}\begin{aligned}
+\Pr(a_k | Z_{1:k})
+&\propto
+(1 - P_D) m_k \frac{{M_K \choose m_k} P_{FA}^{m_k}(1 - P_{FA})^{M_k - m_k}}{{M_k \choose m_k - 1} P_{FA}^{m_k - 1}(1 - P_{FA})^{M_k - m_k + 1}} \\
+&= (1 - P_D) m_k \frac{\frac{M_k!}{m_k !(M_k - m_k)!} P_{FA}}{\frac{M_k !}{(m_k - 1)!(M_k - m_k + 1)!}(1 - P_{FA})} \\
+&= (1 - P_D) m_k \frac{M_k - m_k + 1}{m_k}PP_{FA} \frac{1}{1 - P_{FA}} \\
+&= (1 - P_D) P_{FA}M_k \frac{1 - \frac{m_k - 1}{M_k}}{1 - P_{FA}}.
+\end{aligned}\end{equation}
+For $a_k > 0$, the result is the same as in b), however since we scaled with $V_c$ in that expression, to obtain the same result, we must do the same here (or the opposite in fact). As a result, we get
+\begin{equation}\begin{aligned}
+\Pr(a_k | Z_{1:k})
+&\propto
+(1 - P_D) \frac{P_{FA}M_k}{V_k} \frac{1 - \frac{m_k - 1}{M_k}}{1 - P_{FA}}
+\end{aligned}\end{equation}
+when $a_k = 0$.
+
+\subsection{}
+As the number of bernoulli trials ($M_k$) grows large in a binomial distribution, it approximates a poisson distribution. We can see this here by looking at when $\frac{m_k - 1}{M_k} \approx 0$ and $P_{FA} \approx 0$ (the probability for each particular event vanishes as the number of trials grows). With that, the last fraction approximates $1$ and $\frac{P_{FA}M_k}{V_k} \approx \lambda$, meaning $\Pr(a_k | Z_{1:k}) \approx \lambda (1 - P_D)$, i.e. the poisson distribution is a good approximation in this case.
+
+\section{}
+\subsection{}
+In single target tracking, we assume that only a single measurement originates from the target, however often encouter multiple measurements. This means we have a mixture of the different possible measurements. In other words, each measurement is a component, and it is weighted by the probability of it orginating from the target. These are the probabilities we wound in task 2. The main complicating factors of this is the fact that mixtures in general must be reduced to a single gaussian for each timestep, thereby losing information to the approximation. Not doing this however would result in the number of mixtures increasing exponentially.
+
+\subsection{}
+The PDA does not include any concept of target existance, only detection. Without that last state, we cannot express situations where the target is simply not there. This is a problem e.g. in situations where the target leaves the tracking area. An IPDA can then correctly predict that the target has dissapeared, whereas a regular PDA will simply keep predicting, albeit without correct measurements as inputs, only previous states and the model, usually resulting in a very wrong track.
+
+\subsection{}
+When using IPDA instead of PDA, we gain another component in the mixture for every timestep. As explained previously, this makes things more complicated and our predictions less precise due to the guassians being reduced.
+
+\section{}
+\subsection{}
+The prediction step of the PDAF is simply the prediction step of the kalman filter so we get
+\begin{lstlisting}[caption={PDAF Predict}]
+function [xp, Pp] = predict(obj, x, P, Ts)
+    % predict state distribution
+    %
+    % x (n x 1): mean to predict
+    % P (n x n): covariance to predict
+    % Ts (scalar): sampling time
+    %
+    % xp (n x 1): predicted mean
+    % Pp (n x n): predicted covariance
+
+    [xp, Pp] = obj.ekf.predict(x, P, Ts);
+end
+\end{lstlisting}
+
+\subsection{}
+For gating, we iterate over each measurement, and compute whether it is inside the validation gate defined as it is on page 110 in the book. Observing that this term is simply the normalized square of the innovations (NIS) of the kalman filter,
+\begin{equation}\begin{aligned}
+\epsilon^\nu_k = \nu_k^\top S^{-1}_k \nu_k
+\end{aligned}\end{equation}
+we get the following code
+\begin{lstlisting}[caption={PDAF gating function}]
+function gated = gate(obj, Z, x, P)
+    % gates/validates measurements: (z-h(x))'S^(-1)(z-h(x)) <= g^2
+    %
+    % Z (dim(z) x m): measurements to gate
+    % x (n x 1): state mean
+    % P (n x n): state covariance
+    %
+    % gated (m x 1): gated(j) = true if measurement j is within gate
+
+    m = size(Z, 2);
+    gated = false(m, 1);
+    gSquared = obj.gateSize;
+
+    for j = 1:m
+        g = obj.ekf.NIS(Z(:, j), x, P);
+        gated(j) = g <= gSquared;
+    end
+end
+\end{lstlisting}
+
+\subsection{}
+Here, the case when $a_k = 0$ is already given and we are left to implement the case when $a_k > 0$. We get the log likelihood conditionals as the log likelihood of the kalman filter, and recall that since we are working with logarithms, the product of $P_D$ and this conditional corresponds to the sum of the logarithms.
+\begin{lstlisting}[caption={PDAF log likelihood ratios}]
+function ll = loglikelihoodRatios(obj, Z, x, P)
+    % Calculates the poseterior event loglikelihood ratios.
+    %
+    % Z (dim(z) x m): measurements to use in likelihoods
+    % x (n x 1): state mean
+    % P (n x n): state covariance
+    %
+    % ll (m + 1 x 1): the posterior log likelihood ratios, ll(1)
+    %                 corresponds to no detection
+
+    % precalculate some parameters
+    m = size(Z, 2);
+    logPD = log(obj.PD);
+    logPND = log(1 - obj.PD); % P_ND = 1 - P_D
+    logClutter = log(obj.clutterRate);
+
+    % allocate
+    llCond = zeros(m, 1); % log(l^a),
+    ll = zeros(m + 1, 1);
+
+    % calculate log likelihood ratios
+    ll(1) = logPND + logClutter;
+    for j = 1:m
+        llCond(j) = obj.ekf.loglikelihood(Z(:, j), x, P);
+        ll(j + 1) = logPD + llCond(j);
+    end
+end
+\end{lstlisting}
+
+\subsection{}
+The association probabilities must sum to 1, because of the assumption that only a single measurement is associated with the target. With that in mind, the operation needed to find $\beta$ is to exponentiate the log likelihood ratios, and normalizing. So we get
+
+\begin{lstlisting}[caption={PDAF assiciation probabilities}]
+function beta = associationProbabilities(obj, Z, x, P)
+    % calculates the poseterior event/association probabilities
+    %
+    % Z (dim(z) x m): measurements ot use to get probabilities
+    % x (n x 1): state mean
+    % P (n x n): state covariance
+    %
+    % beta (m + 1 x 1): the association probabilities (normalized
+    %                   likelihood ratios)
+
+   %log likelihoods
+   lls = obj.loglikelihoodRatios(Z, x, P);
+
+   % probabilities
+   beta = exp(lls) / sum(exp(lls));
+end
+\end{lstlisting}
+
+\subsection{}
+Observing that the conditional update step is simply an update step of the Kalman filter, we simply do as in the listing below.
+\begin{lstlisting}[caption={PDAF Conditional Update}]
+function [xupd, Pupd] = conditionalUpdate(obj, Z, x, P)
+    % updates the state with all possible measurement associations
+    %
+    % Z (dim(z) x m): measurements to use for update
+    % x (n x 1): state mean to update
+    % P (n x n): state covariance to update
+    %
+    % xupd (n x m + 1): the updated states for all association
+    %                   events. xupd(:, 1) corresponds to no detection
+    % Pupd (n x n x m + 1): the updated covariances for all association
+    %                   events. Pupd(:, :, 1) corresponds to no detection
+
+    m = size(Z, 2);
+
+    % allocate
+    xupd = zeros([size(x, 1), m + 1]);
+    Pupd = zeros([size(P), m + 1]);
+
+    % undetected
+    xupd(:, 1) = x;
+    Pupd(:, :, 1) = P;
+
+    % detected
+    for j = 1:m
+        [xupd(:, j + 1), Pupd(:, :, j + 1)] = obj.ekf.update(Z(:, j), x, P);
+    end
+end
+\end{lstlisting}
+
+\subsection{}
+Reusing the \texttt{reduceGaussMix} function from a previous assignment, we get
+\begin{lstlisting}[caption={PDAF Mixture Reduction Step}]
+function [xred, Pred] = reduceMixture(obj, beta, x, P)
+    % reduces a Gaussian mixture to a single Gauss
+    %
+    % beta (m + 1 x 1): the mixture weights
+    % x (n x m + 1): the means to reduce
+    % P (n x n x m + 1): the covariances to reduce
+    %
+    % xred (n x 1): the mean of the mixture
+    % Pred (n x n): the covariance of the mixture
+
+    [xred, Pred] = reduceGaussMix(beta, x, P);
+end
+\end{lstlisting}
+
+\subsection{}
+Combining the above functions into a final update step, we obtain
+\begin{lstlisting}[caption={PDAF Update Step}]
+function [xupd, Pupd] = update(obj, Z, x, P)
+    % The whole PDAF update sycle.
+    %
+    % Z (dim(z) x m): measurements to use for update
+    % x (n x 1): state mean to update
+    % P (n x n): state covariance to update
+    %
+    % xupd (n x 1): the mean of the PDAF update
+    % Pupd (n x n): the covariance of the PDAF update
+
+    % remove the not gated measurements from consideration
+    gated = obj.gated(Z, x, P);
+    Zg = Z(:, gated);
+
+    % find association probabilities
+    beta = obj.associationProbabilities(Zg, x, P);
+
+    % find the mixture components pdfs
+    [xcu, Pcu] = obj.conditionalUpdate(Zg, x, P);
+
+    % reduce mixture
+    [xupd, Pupd] = obj.reduceMixture(beta, xcu, Pcu);
+end
+\end{lstlisting}
+
+\section{}
+\end{document}
