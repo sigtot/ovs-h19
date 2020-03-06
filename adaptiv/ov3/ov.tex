@@ -1,0 +1,163 @@
+\documentclass[]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{graphicx}
+\usepackage{capt-of}
+\usepackage{listings}
+\usepackage{siunitx}
+\usepackage[section]{placeins}
+
+
+
+% Oppgavenummerering %
+\renewcommand\thesection{Problem \arabic{section}}
+\renewcommand\thesubsection{\alph{subsection})}
+
+% Bevis
+\newcommand\TombStone{\rule{.5em}{.5em}}
+\renewcommand\qedsymbol{\TombStone}
+\renewcommand{\proofname}{Bevis.} % Norske bevis
+
+\title{}
+\author{Sigurd Totland | MTTK}
+
+\begin{document}
+\maketitle
+
+\section{I\&S 4.5}
+\subsection{With $R(s)$ known}
+We have
+\begin{equation}\begin{aligned}
+\label{eq:sys}
+y = \frac{Z(s)}{R(s)}u \implies R(s)y = Z(s)u
+\end{aligned}\end{equation}
+Defining
+\begin{equation}\begin{aligned}
+\alpha_n = \begin{bmatrix}
+s^n & s^{n-1} & \dots & s & 1
+\end{bmatrix}^\top,
+\end{aligned}\end{equation}
+we then obtain an adaptive scheme where our unknowns parameters are separated into a single vector $\theta^*$,
+\begin{equation}\begin{aligned}
+R(s)y =
+\begin{bmatrix}
+b_{n-1} & b_{n-2} & \dots & b_1 & b_0
+\end{bmatrix}
+\alpha_{n-1} u
+= {\theta^*}^\top \alpha_{n-1} u.
+\end{aligned}\end{equation}
+However, we notice how the right hand side in this expression is not realizable. To ensure it is realizable, we filter it by deviding by a Hurwitz polinomial on both sides. We define
+\begin{equation}\begin{aligned}
+\Lambda(s) =
+\begin{bmatrix}
+\lambda_n & \lambda_{n-1} & \dots & \lambda_1 & \lambda_0
+\end{bmatrix}
+\alpha_n
+= \lambda \alpha_n
+\end{aligned}\end{equation}
+and obtain
+\begin{equation}\begin{aligned}
+\frac{R(s)}{\Lambda(s)}y = \theta^{*\top} \frac{\alpha_{n-1}u}{\Lambda(s)}.
+\end{aligned}\end{equation}
+Letting
+\begin{equation}\begin{aligned}
+\lambda =
+\begin{bmatrix}
+1 & \alpha_{n-1} & \dots & a_1 & a_0
+\end{bmatrix},
+\end{aligned}\end{equation}
+we get
+\begin{equation}\begin{aligned}
+z = \theta^{*\top} \phi
+\end{aligned}\end{equation}
+where $z=y$ and $\phi = \frac{\alpha_{n-1}u}{\Lambda(s)} = \frac{\alpha_{n-1}}{R(s)}$ are known signals and $\theta^*$ is our unknown parameter vector. I realize now that could have been deduced directly from \eqref{eq:sys}.
+
+\subsection{With Z(s) known}
+Starting from  \eqref{eq:sys} to
+\begin{equation}\begin{aligned}
+R(s)y = Z(s)u
+\end{aligned}\end{equation}
+and rewriting the lhs yields
+\begin{equation}\begin{aligned}
+R(s)y =
+(s^n +
+\begin{bmatrix}
+a_{n-1} & a_{n-2} & \dots & a_1 a_0
+\end{bmatrix}
+\alpha_{n-1})y
+= (s^n + \theta^{*\top}\alpha_{n-1})y
+= Z(s)u.
+\end{aligned}\end{equation}
+Then we write
+\begin{equation}\begin{aligned}
+\theta^{*\top}\alpha_{n-1}y
+= Z(s)u - s^ny
+\end{aligned}\end{equation}
+We filter both sides to make the rhs realizable. Defining $\Lambda(s)$ as a Hurwitz polynomial of degree $n$, i.e.
+\begin{equation}\begin{aligned}
+\Lambda(s) = \lambda\alpha_{n}
+\end{aligned}\end{equation}
+we obtain
+\begin{equation}\begin{aligned}
+z = \theta^{*\top} \phi
+\end{aligned}\end{equation}
+with known signals $z = \frac{Z(s)u - s^ny}{\Lambda(s)}$, $\phi = \frac{\alpha_{n-1} y}{\Lambda(s)}$ and unknown parameter vector $\theta^*$.
+
+\section{}
+We have
+\begin{equation}\begin{aligned}
+\nabla J(\theta) = -\phi \frac{2(z-\theta^\top \phi}{2m^2} = 0 \\
+\end{aligned}\end{equation}
+which implies
+\begin{equation}\begin{aligned}
+&\phi \theta^\top \phi = \phi z \\
+\implies\quad &\phi^\top \phi \theta^\top \phi = \phi^\top \phi z \\
+\implies\quad & \phi^\top \phi \phi^\top \theta = \phi^\top \phi z \\
+\implies\quad & \phi^\top \theta \phi^\top \phi = \phi^\top \phi z \\
+\implies\quad & \phi^\top \theta = \frac{\phi^\top \phi z }{\phi^\top \phi} \\
+\implies\quad & \theta(t) = \frac{\phi z}{\phi^\top \phi}.
+\end{aligned}\end{equation}
+
+\section{}
+We will show that $\omega_0 = F\omega$, where $F \in \mathcal{R}^{m \times n}$ with $m\leq n$ is a constant matrix and $\omega \in \mathcal{L}_\infty$ is PE, is PE iff. $F$ has rank $m$. From the definition of PE from I\&S (4.3.39), we have
+\begin{equation}\begin{aligned}
+\alpha_1 I &\geq \frac{1}{T_0} \int^{t+T_0}_{t}\omega_0(\tau) \omega_0^\top(\tau) d\tau \geq \alpha_0 I, \quad \forall t \geq 0 \\
+\iff \alpha_1 I &\geq \frac{1}{T_0} \int^{t+T_0}_{t}F\omega(\tau) (F\omega)^\top(\tau) d\tau \geq \alpha_0 I, \quad  \forall t \geq 0 \\
+\iff \alpha_1 I &\geq \frac{1}{T_0} \int^{t+T_0}_{t}F\omega(\tau) \omega^\top(\tau)F^\top d\tau \geq \alpha_0 I, \quad  \forall t \geq 0 \\
+\end{aligned}\end{equation}
+Because $f$ is a constant matrix, we can put it outside the integral, obtaining
+\begin{equation}\begin{aligned}
+\alpha_1 I &\geq F\left(\frac{1}{T_0} \int^{t+T_0}_{t}\omega(\tau) \omega^\top(\tau) d\tau\right) F^\top \geq \alpha_0 I, \quad  \forall t \geq 0. \\
+\end{aligned}\end{equation}
+Furthermore, since $\omega$ is PE,
+\begin{equation}\begin{aligned}
+\beta_1 I\geq \frac{1}{T_0} \int^{t+T_0}_{t}\omega(\tau) \omega^\top(\tau) d\tau \geq \beta_0 I.
+\end{aligned}\end{equation}
+We call
+\begin{equation}\begin{aligned}
+G = \frac{1}{T_0} \int^{t+T_0}_{t}\omega(\tau) \omega^\top(\tau) d\tau,
+\end{aligned}\end{equation}
+and rewrite to
+\begin{equation}\begin{aligned}
+\beta_1 \geq G \geq \beta_0.
+\end{aligned}\end{equation}
+For any matrix $M \geq 0 \iff QMQ^\top \geq 0$, we obtain
+\begin{equation}\begin{aligned}
+\beta_1 FF^\top \geq F G F^\top \geq \beta_0 FF^\top.
+\end{aligned}\end{equation}
+Now, if $F$ is full rank, we have
+\begin{equation}\begin{aligned}
+\label{eq:FF}
+\beta_1'I \geq FF^\top \geq \beta_0'I
+\end{aligned}\end{equation}
+for some constants $\beta_1' \geq 0$ and $\beta_0' \geq 0$, meaning that
+\begin{equation}\begin{aligned}
+\alpha_1 I \geq F G F^\top \geq \alpha_0I
+\end{aligned}\end{equation}
+and $\omega_0$ is PE. The result in \eqref{eq:FF} is found in the proof of Lemma 5.6.2 in I\&S.\qed
+\end{document}
+

@@ -1,0 +1,209 @@
+\documentclass[]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{graphicx}
+\usepackage{capt-of}
+\usepackage{listings}
+\usepackage{siunitx}
+\usepackage[section]{placeins}
+\usepackage{float}
+
+
+
+% Oppgavenummerering %
+\renewcommand\thesection{Problem \arabic{section}}
+\renewcommand\thesubsection{\alph{subsection})}
+
+% Bevis
+\newcommand\TombStone{\rule{.5em}{.5em}}
+\renewcommand\qedsymbol{\TombStone}
+\renewcommand{\proofname}{Bevis.} % Norske bevis
+
+\title{}
+\author{Sigurd Totland | MTTK}
+
+\begin{document}
+\maketitle
+
+\section{}
+\subsection{}
+We  write the plant as
+\begin{align}
+\label{eq:tf}
+(s^3 + a_2 s^2 + a_1 s + a_0) y &= (b_2 s^2 + b_1 s + b_0)u \\
+s^3 y + [a_2, a_1, a_0] \alpha_2 y &= [b_2, b_1, b_0] \alpha_2 u.
+\end{align}
+We then get
+\begin{equation}\begin{aligned}
+s^3 y = [b_2, b_1, b_0, a_2, a_1, a_0] [\alpha_2 u, -\alpha_2 y]^\top
+\end{aligned}\end{equation}
+where we let $\theta^{*\top} = [b_2, b_1, b_0, a_2, a_1, a_0]$ be our vector of unknown parameters. This form however is not realizable, as we have a triple derivative of $y$. We combat this by defining a Hurwitz polynomial
+\begin{equation}\begin{aligned}
+\Lambda(s) = s^3 + \lambda_2s^2 + \lambda_1 s + \lambda_0
+\end{aligned}\end{equation}
+and filter both sides with it's reciprocal, obtaining
+\begin{equation}\begin{aligned}
+z = \frac{s^3y}{\Lambda(s)}  = \theta^{*\top} [\frac{\alpha_2}{\Lambda(s) u}, -\frac{\alpha_2}{\Lambda(s)y}]^\top.
+\end{aligned}\end{equation}
+That is, we have defined $\phi = [\frac{\alpha_2}{\Lambda(s) u}, -\frac{\alpha_2}{\Lambda(s)y}]^\top$, hence having the usual form $z = \theta^{*\top}\phi$.
+\subsection{}
+If we instead know $[a_2, a_1, a_0]$ and wish to parametrize the plant in terms of $\theta^{*\top} = [b_2, b_1, b_0]$ we rewrite \eqref{eq:tf} to
+\begin{equation}\begin{aligned}
+(s^3 + [a_2, a_1, a_0] \alpha_2)y = [b_2, b_1, b_0] \alpha_2 u.
+\end{aligned}\end{equation}
+Using the same filter as before, we obtain the realizable adaptive law
+\begin{equation}\begin{aligned}
+z = \frac{s^3 + [a_2, a_1, a_0]\alpha_2}{\Lambda}y = [b_2, b_1, b_0] \frac{\alpha_2}{\Lambda} u = \theta^{*\top}\phi.
+\end{aligned}\end{equation}
+If we were to let $\lambda_i = a_i$ in $\Lambda$, the fraction would in fact cancel and we would have $y = \theta^{*\top}\phi$.
+\subsection{}
+On the flip side, if we know $[b_2, b_1, b_0]$, we find
+\begin{equation}\begin{aligned}
+\left[b_2, b_1, b_0\right] \alpha_2 u = (s^3 + [a_2, a_1, a_0] \alpha_2)y
+\end{aligned}\end{equation}
+which in turn yields
+\begin{equation}\begin{aligned}
+\frac{s^3y - [b_2, b_1, b_0] \alpha_2}{\Lambda} u = -[a_2, a_1, a_0] \frac{\alpha_2}{\Lambda} y.
+\end{aligned}\end{equation}
+Given that $[b_2, b_1, b_0] = [0, 0, 1]$, we then obtain $s^3y - [b_2, b_1, b_0] \alpha_2 = s^3y - u$, and so $z = \frac{s^3y - u}{\Lambda}$, $\theta^{*\top} = [b_2, b_1, b_0]$ and $\phi = -\frac{\alpha_2}{\Lambda}y$.
+
+\section{}
+\subsection{}
+We define states
+\begin{equation}\begin{aligned}
+x_1 &= x, \quad \text{and} \\
+x_2 &= \dot x.
+\end{aligned}\end{equation}
+Rewriting the system on the form
+\begin{equation}\begin{aligned}
+\dot x_1 &= x_2,\\
+\dot x_2 &= \frac{k}{M}x_1 - \frac{f}{M}x_2 + \frac{1}{M}u
+\end{aligned}\end{equation}
+then lets us write the system on the general state space representation
+\begin{equation}\begin{aligned}
+\dot x = Ax + Bu
+\end{aligned}\end{equation}
+with \begin{equation}\begin{aligned}
+A = \begin{bmatrix}
+0 & 1 \\
+-\frac{k}{M} & -\frac{f}{M} \\
+\end{bmatrix},\quad \text{and} \quad
+B = \begin{bmatrix}
+0\\
+\frac{1}{M}\\
+\end{bmatrix}.
+\end{aligned}\end{equation}
+
+\subsection{}
+Using $s$ as a differential operator we obtain
+ \begin{equation}\begin{aligned}
+Ms^2x + fsx + kx = u
+\end{aligned}\end{equation}
+which yields the transfer function from $x$ to $u$
+\begin{equation}\begin{aligned}
+\frac{x}{u}(s) = \frac{1}{Ms^2 + fs + k} = \frac{\frac{1}{M}}{s^2 + \frac{f}{M}s + \frac{k}{M}}.
+\end{aligned}\end{equation}
+
+\subsection{}
+We now want to find an adaptiv law with $\theta^{*\top} = [M, f, k]$. We write
+\begin{equation}\begin{aligned}
+u = [M, f, k]\alpha_2 x,
+\end{aligned}\end{equation}
+but the right hand side in this is not proper and hence non-realizable. We thus define a Hurwitz polynomial
+\begin{equation}\begin{aligned}
+\Lambda = s^2 + \lambda_1 s + \lambda_0
+\end{aligned}\end{equation}
+and devide both sides with it obtaining the adaptive scheme
+\begin{equation}\begin{aligned}
+z = \frac{u}{\Lambda} = [M, f, k] \frac{\alpha_2}{\Lambda}x.
+\end{aligned}\end{equation}
+That is, $\phi = \frac{\alpha_2}{\Lambda}x$.
+
+\section{}
+\subsection{}
+From I\&S page 50-51 we have the realization
+\begin{equation}\begin{aligned}
+\dot \phi_1 = \Lambda_c \phi + l u,
+\end{aligned}\end{equation}
+where
+\begin{equation}\begin{aligned}
+\Lambda_c =
+\begin{bmatrix}
+-\lambda_{n-1} & -\lambda_{n-2} & \dots & -\lambda_0\\
+1 & 0 & \dots & 0 \\
+\vdots & \ddots &  & \vdots \\\
+0 & \dots & 1 & 0 \\
+\end{bmatrix}, \quad \text{and} \quad
+l =
+\begin{bmatrix}
+1\\
+0\\
+\vdots \\
+0 \\
+\end{bmatrix}.
+\end{aligned}\end{equation}
+
+\section{}
+\subsection{}
+We have that
+\begin{equation}\begin{aligned}
+||u||_1 = \int^{\infty}_{0}|u|dt = \sum_{n=1}^{\infty}n \frac{1}{n^3} = \sum_{n=1}^{\infty}\frac{1}{n^2} = \frac{\pi^2}{6},
+\end{aligned}\end{equation}
+where the last result is obtained from recognizing the sum as the one in the Basel problem. That implies $u \in \mathcal{L}_1$. However,
+\begin{equation}\begin{aligned}
+||u||_2 = \int^{\infty}_{0}dt = \sum_{n=1}^{\infty}n \frac{1}{n} = \frac{n=1}{\infty} \rightarrow \infty \implies u \notin \mathcal{L}_2
+\end{aligned}\end{equation}
+and
+\begin{equation}\begin{aligned}
+||u||_\infty = \sup_{t\geq 0} (u) = \lim_{k\rightarrow \infty} k \implies u \notin \mathcal{L}_\infty. \qed
+\end{aligned}\end{equation}
+
+\subsection{}
+We recognize $G(s)$ as the laplace transform of $g(t) = e^{-t}$ and $y=g*u$. Since $g$ decays exponentially fast, it is clearly in $\mathcal{L}_1$. Thus, since $u \in \mathcal{L_1}$ corollary 3.3.1 in I\&S (ii) gives that
+\begin{equation}\begin{aligned}
+y \in \mathcal{L}_1 \bigcap \mathcal{L}_\infty, \quad \text{and} \quad
+\lim_{t\rightarrow \infty} t = 0. \qed
+\end{aligned}\end{equation}
+
+\section{}
+\subsection{}
+Consider theorem 3.5.1 in I\&S. Clearly, (i) holds, since all poles are clearly the left half plane. In this case the relative order is $n^* = 1$. We have
+\begin{equation}\begin{aligned}
+\Re \left[G(jw)\right] = \Re \left[\frac{j\omega + 5}{(j\omega)^2 + 5j\omega + 4} \right]
+\end{aligned}\end{equation}
+Then, we find
+\begin{equation}\begin{aligned}
+\lim_{|\omega| \rightarrow \infty} \omega^2 \Re \left[ \frac{j \omega + 5}{-\omega^2 + 5j \omega + 4} \right] = -1
+\end{aligned}\end{equation}
+and as such, $G$ is not SPR. It is neither PR either since the residue at $-4$ is
+\begin{equation}\begin{aligned}
+\text{Res}(G,-4) = \lim_{s \rightarrow -4} (s+4)G(s) = \lim_{s \rightarrow -4}\frac{s+5}{s+1} = -\frac{1}{3} \not > 0.
+\end{aligned}\end{equation}
+
+\subsection{}
+This tf is not PR since it has a non-simple pole (of order $2$) in $s=-2$.
+
+\subsection{}
+This time all poles are again in the left half plane, but we have a zero in the rhp. We have
+\begin{equation}\begin{aligned}
+\Re \left[ G(jw) \right]
+&= \Re \left[ \frac{j\omega - 2}{(j\omega)^2 + 8j \omega + 15} \right] \\
+&= \Re \left[\frac{j \omega - 2}{-\omega^2 + 8j \omega + 15} \right] \\
+&= \Re \left[\frac{(j \omega - 2)(-\omega^2+ 15 - 8j  \omega )}{(-\omega^2 + 8j \omega + 15)(-\omega^2+ 15 - 8j  \omega )} \right] \\
+&= \frac{8 \omega^2 - 2\omega^2 - 30}{(-\omega^2 + 15)^2 + 64 \omega^2} \\
+&= \frac{6 \omega^2 - 30}{\omega^4 + 34 \omega^2 + 15^2}.
+\end{aligned}\end{equation}
+Because
+\begin{equation}\begin{aligned}
+\text{Res}(G,-3) = \lim_{s \rightarrow -3} (s+3)G(s) = \lim_{s \rightarrow -3}\frac{s-2}{s+5} = -\frac{5}{2} \not > 0
+\end{aligned}\end{equation}
+this is not PR.
+\subsection{}
+This is, by corollary 3.5.1, not PR since $|n^*| = 2 > 1$.
+
+\end{document}
+
